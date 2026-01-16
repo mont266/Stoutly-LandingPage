@@ -13,6 +13,22 @@ const screenshots = [
 export const Hero: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentScreenshotIndex, setCurrentScreenshotIndex] = useState(0);
+  const [currentTime, setCurrentTime] = useState('');
+
+  // Clock logic
+  useEffect(() => {
+    const updateClock = () => {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      setCurrentTime(`${hours}:${minutes}`);
+    };
+
+    updateClock(); // Set time immediately
+    const timerId = setInterval(updateClock, 1000); // Update every second to ensure it's always current
+
+    return () => clearInterval(timerId); // Cleanup on unmount
+  }, []);
 
   // Slideshow logic
   const intervalRef = useRef<number | null>(null);
@@ -128,7 +144,7 @@ export const Hero: React.FC = () => {
               />
               <div className="relative rounded-[2.5rem] border-[8px] border-gray-900 bg-gray-900 shadow-2xl overflow-hidden aspect-[9/19.5] ring-1 ring-gray-700/50">
                 <div className="absolute top-0 w-full h-6 bg-black/40 z-30 flex items-center justify-between px-6 backdrop-blur-sm pointer-events-none">
-                  <div className="text-[10px] text-white font-medium">9:41</div>
+                  <div className="text-[10px] text-white font-medium w-9 text-left">{currentTime}</div>
                   <div className="flex gap-1">
                      <div className="w-3 h-3 bg-white rounded-full opacity-20"></div>
                      <div className="w-3 h-3 bg-white rounded-full opacity-20"></div>
