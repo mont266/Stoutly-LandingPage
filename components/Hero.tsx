@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, BatteryOff } from 'lucide-react';
 import { DownloadModal } from './DownloadModal';
 
 // Add your screenshot paths here. The component will cycle through them.
@@ -174,9 +174,9 @@ export const Hero: React.FC = () => {
                 className="absolute inset-0 bg-amber-500/30 blur-[60px] rounded-full -z-10 translate-y-10"
               />
               <div className="relative rounded-[2.5rem] border-[8px] border-gray-900 bg-gray-900 shadow-2xl overflow-hidden aspect-[9/19.5] ring-1 ring-gray-700/50">
-                <div className="absolute top-0 w-full h-6 bg-black/40 z-30 flex items-center justify-between px-4 backdrop-blur-sm pointer-events-none">
-                  <div className="text-[10px] text-white font-medium w-9 text-left">{currentTime}</div>
-                  {!isPhoneOff && (
+                {!isPhoneOff && (
+                  <div className="absolute top-0 w-full h-6 bg-black/40 z-30 flex items-center justify-between px-4 backdrop-blur-sm pointer-events-none">
+                    <div className="text-[10px] text-white font-medium w-9 text-left">{currentTime}</div>
                     <div className="flex items-center gap-1.5 text-white/70">
                       <span className="text-[9px] font-medium tabular-nums">{batteryLevel}%</span>
                       <div className="w-[18px] h-[9px] border border-white/50 rounded-[2px] p-[1px] flex items-center relative">
@@ -189,8 +189,8 @@ export const Hero: React.FC = () => {
                           <div className="absolute -right-[2px] top-1/2 -translate-y-1/2 w-[1px] h-2 bg-white/50 rounded-r-sm"></div>
                       </div>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
                 
                 {/* Screenshot Carousel */}
                 <AnimatePresence initial={false}>
@@ -215,15 +215,20 @@ export const Hero: React.FC = () => {
                    />
                 </AnimatePresence>
 
-                {/* Black Screen for Off State */}
+                {/* Out of Battery Screen */}
                 <AnimatePresence>
                   {isPhoneOff && (
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ duration: 1, delay: 0.2 }}
-                      className="absolute inset-0 bg-black z-40"
-                    />
+                      className="absolute inset-0 bg-black z-40 flex items-center justify-center"
+                    >
+                      <div className="flex flex-col items-center gap-2 text-red-500 opacity-60">
+                          <BatteryOff size={64} strokeWidth={1.5} />
+                          <p className="text-sm font-medium">Out of Battery</p>
+                      </div>
+                    </motion.div>
                   )}
                 </AnimatePresence>
 
