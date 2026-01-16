@@ -78,9 +78,6 @@ export const Hero: React.FC = () => {
           {/* Text Content */}
           <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left mb-24 lg:mb-0">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-              <span className="inline-block py-1 px-3 rounded-full bg-gray-800 border border-gray-700 text-amber-400 text-xs font-semibold tracking-wide uppercase mb-4">
-                The #1 App for Guinness Lovers
-              </span>
               <h1 className="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
                 The Pursuit of the <br className="hidden lg:block" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-200">
@@ -155,7 +152,7 @@ export const Hero: React.FC = () => {
                           if (currentSrc.includes('public/')) {
                               target.src = currentSrc.replace('public/', '');
                           } else {
-                              target.src = `images/+app=screenshot-${currentScreenshotIndex + 1}.png`;
+                              target.src = `images/app-screenshot-${currentScreenshotIndex + 1}.png`;
                           }
                       }}
                    />
