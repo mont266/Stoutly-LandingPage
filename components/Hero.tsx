@@ -1,11 +1,40 @@
-import React, { useState, useRef } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { DownloadModal } from './DownloadModal';
 
+// Add your screenshot paths here. The component will cycle through them.
+const screenshots = [
+  "public/images/app-screenshot.png",
+  "public/images/app-screenshot-2.png", // Example: A map view
+  "public/images/app-screenshot-3.png", // Example: A user profile
+];
+
 export const Hero: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentScreenshotIndex, setCurrentScreenshotIndex] = useState(0);
+
+  // Slideshow logic
+  const intervalRef = useRef<number | null>(null);
+
+  const startSlideshow = () => {
+    stopSlideshow(); // Ensure no multiple intervals are running
+    intervalRef.current = window.setInterval(() => {
+      setCurrentScreenshotIndex(prev => (prev + 1) % screenshots.length);
+    }, 5000); // Change image every 5 seconds
+  };
+
+  const stopSlideshow = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+  };
   
+  useEffect(() => {
+    startSlideshow();
+    return () => stopSlideshow();
+  }, []);
+
   // 3D Tilt Logic
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -14,11 +43,8 @@ export const Hero: React.FC = () => {
   const mouseX = useSpring(x, { stiffness: 300, damping: 30 });
   const mouseY = useSpring(y, { stiffness: 300, damping: 30 });
 
-  // Tilt range (degrees)
   const rotateX = useTransform(mouseY, [-0.5, 0.5], ["15deg", "-15deg"]);
   const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-15deg", "15deg"]);
-  
-  // Lighting/Sheen effect movement
   const sheenX = useTransform(mouseX, [-0.5, 0.5], ["0%", "100%"]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -26,11 +52,8 @@ export const Hero: React.FC = () => {
     const rect = ref.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
-    
-    // Calculate mouse position relative to center (from -0.5 to 0.5)
     const mouseXFromCenter = (e.clientX - rect.left) / width - 0.5;
     const mouseYFromCenter = (e.clientY - rect.top) / height - 0.5;
-    
     x.set(mouseXFromCenter);
     y.set(mouseYFromCenter);
   };
@@ -39,23 +62,22 @@ export const Hero: React.FC = () => {
     x.set(0);
     y.set(0);
   };
+  
+  const handleIndicatorClick = (index: number) => {
+    setCurrentScreenshotIndex(index);
+    startSlideshow(); // Restart timer from this point
+  }
 
   return (
     <div className="relative overflow-hidden pt-24 pb-16 sm:pt-32 sm:pb-24 lg:pb-32 bg-gray-900 perspective-1000">
-      
-      {/* Background radial gradient effect */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-amber-500/10 rounded-full blur-[100px] -z-10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="lg:grid lg:grid-cols-12 lg:gap-16 items-center">
           
           {/* Text Content */}
-          <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left mb-12 lg:mb-0">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+          <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left mb-24 lg:mb-0">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <span className="inline-block py-1 px-3 rounded-full bg-gray-800 border border-gray-700 text-amber-400 text-xs font-semibold tracking-wide uppercase mb-4">
                 The #1 App for Guinness Lovers
               </span>
@@ -88,55 +110,57 @@ export const Hero: React.FC = () => {
 
           {/* 3D Interactive Phone Hero */}
           <div className="relative lg:col-span-6 w-full max-w-[340px] mx-auto lg:max-w-[380px] perspective-container" style={{ perspective: "1200px" }}>
-             
-             {/* The Interactive Card */}
             <motion.div 
               ref={ref}
               style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
               onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
+              onMouseEnter={stopSlideshow}
+              onMouseLeave={() => {
+                handleMouseLeave();
+                startSlideshow();
+              }}
               initial={{ opacity: 0, y: 40, rotateX: 10 }}
               animate={{ opacity: 1, y: 0, rotateX: 0 }}
               transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
               className="relative cursor-pointer group"
             >
-              {/* Pulsing Glow Behind */}
               <motion.div 
                 animate={{ scale: [0.95, 1.05, 0.95], opacity: [0.3, 0.6, 0.3] }}
                 transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
                 className="absolute inset-0 bg-amber-500/30 blur-[60px] rounded-full -z-10 translate-y-10"
               />
-
-              {/* Phone Frame */}
               <div className="relative rounded-[2.5rem] border-[8px] border-gray-900 bg-gray-900 shadow-2xl overflow-hidden aspect-[9/19.5] ring-1 ring-gray-700/50">
-                
-                {/* Status Bar Shim */}
-                <div className="absolute top-0 w-full h-6 bg-black/40 z-30 flex items-center justify-between px-6 backdrop-blur-sm">
+                <div className="absolute top-0 w-full h-6 bg-black/40 z-30 flex items-center justify-between px-6 backdrop-blur-sm pointer-events-none">
                   <div className="text-[10px] text-white font-medium">9:41</div>
                   <div className="flex gap-1">
                      <div className="w-3 h-3 bg-white rounded-full opacity-20"></div>
                      <div className="w-3 h-3 bg-white rounded-full opacity-20"></div>
                   </div>
                 </div>
+                
+                {/* Screenshot Carousel */}
+                <AnimatePresence initial={false}>
+                   <motion.img
+                      key={currentScreenshotIndex}
+                      src={screenshots[currentScreenshotIndex]}
+                      alt="Stoutly App Screenshot"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.7, ease: 'easeInOut' }}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          const currentSrc = target.src;
+                          if (currentSrc.includes('public/')) {
+                              target.src = currentSrc.replace('public/', '');
+                          } else {
+                              target.src = `images/+app=screenshot-${currentScreenshotIndex + 1}.png`;
+                          }
+                      }}
+                   />
+                </AnimatePresence>
 
-                {/* Actual Screenshot Image */}
-                <img 
-                  src="public/images/app-screenshot.png" 
-                  alt="Stoutly App Screenshot" 
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    // If public/ fails, try without public/ (some servers map public to root)
-                    if (target.src.includes('public/')) {
-                      target.src = "images/app-screenshot.png";
-                    } else {
-                      // Fallback placeholder
-                      target.src = "https://placehold.co/380x820/1f2937/fbbf24?text=Stoutly+App";
-                    }
-                  }}
-                />
-
-                {/* Interactive Sheen/Glass Reflection */}
                 <motion.div 
                   className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 z-40 pointer-events-none"
                   style={{ 
@@ -145,14 +169,24 @@ export const Hero: React.FC = () => {
                     opacity: 1
                   }}
                 />
-                
-                {/* Static Edge Highlight */}
                 <div className="absolute inset-0 rounded-[2rem] ring-1 ring-white/10 pointer-events-none z-50"></div>
-
               </div>
             </motion.div>
+            
+            {/* Carousel Indicator Dots */}
+            <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex gap-2.5">
+              {screenshots.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleIndicatorClick(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    currentScreenshotIndex === index ? 'bg-amber-400 scale-125' : 'bg-gray-600 hover:bg-gray-400'
+                  }`}
+                  aria-label={`Go to screenshot ${index + 1}`}
+                />
+              ))}
+            </div>
 
-            {/* Floating Elements (Optional decorative blurs) */}
             <motion.div 
               animate={{ y: [0, -10, 0] }}
               transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 1 }}
@@ -163,11 +197,9 @@ export const Hero: React.FC = () => {
               transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
               className="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl -z-10"
             />
-
           </div>
         </div>
       </div>
-
       <DownloadModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );

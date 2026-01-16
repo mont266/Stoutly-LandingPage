@@ -4,6 +4,7 @@ import { Hero } from './components/Hero';
 import { Features } from './components/Features';
 import { DownloadSection } from './components/DownloadSection';
 import { Footer } from './components/Footer';
+import { ToastGenerator } from './components/ToastGenerator';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <main>
         <Hero />
         <Features />
+        <ToastGenerator />
         <DownloadSection />
       </main>
       <Footer />
