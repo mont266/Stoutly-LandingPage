@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
-import { ChevronRight, BatteryOff } from 'lucide-react';
+import { ChevronRight, PowerOff } from 'lucide-react';
 import { DownloadModal } from './DownloadModal';
 
 // Add your screenshot paths here. The component will cycle through them.
@@ -194,25 +194,27 @@ export const Hero: React.FC = () => {
                 
                 {/* Screenshot Carousel */}
                 <AnimatePresence initial={false}>
-                   <motion.img
-                      key={currentScreenshotIndex}
-                      src={screenshots[currentScreenshotIndex]}
-                      alt="Stoutly App Screenshot"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.7, ease: 'easeInOut' }}
-                      className="absolute inset-0 w-full h-full object-cover"
-                      onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          const currentSrc = target.src;
-                          if (currentSrc.includes('public/')) {
-                              target.src = currentSrc.replace('public/', '');
-                          } else {
-                              target.src = `images/app-screenshot-${currentScreenshotIndex + 1}.png`;
-                          }
-                      }}
-                   />
+                   {!isPhoneOff && (
+                     <motion.img
+                        key={currentScreenshotIndex}
+                        src={screenshots[currentScreenshotIndex]}
+                        alt="Stoutly App Screenshot"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.7, ease: 'easeInOut' }}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            const currentSrc = target.src;
+                            if (currentSrc.includes('public/')) {
+                                target.src = currentSrc.replace('public/', '');
+                            } else {
+                                target.src = `images/app-screenshot-${currentScreenshotIndex + 1}.png`;
+                            }
+                        }}
+                     />
+                   )}
                 </AnimatePresence>
 
                 {/* Out of Battery Screen */}
@@ -224,9 +226,8 @@ export const Hero: React.FC = () => {
                       transition={{ duration: 1, delay: 0.2 }}
                       className="absolute inset-0 bg-black z-40 flex items-center justify-center"
                     >
-                      <div className="flex flex-col items-center gap-2 text-red-500 opacity-60">
-                          <BatteryOff size={64} strokeWidth={1.5} />
-                          <p className="text-sm font-medium">Out of Battery</p>
+                      <div className="text-red-600 animate-pulse">
+                          <PowerOff size={80} strokeWidth={1} />
                       </div>
                     </motion.div>
                   )}
