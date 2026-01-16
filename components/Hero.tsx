@@ -14,20 +14,22 @@ export const Hero: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentScreenshotIndex, setCurrentScreenshotIndex] = useState(0);
   const [currentTime, setCurrentTime] = useState('');
+  const [batteryLevel, setBatteryLevel] = useState(100);
+  const [isPhoneOff, setIsPhoneOff] = useState(false);
 
   // Clock logic
   useEffect(() => {
     const updateClock = () => {
       const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
+      const hours = String(now.getHours());
       const minutes = String(now.getMinutes()).padStart(2, '0');
       setCurrentTime(`${hours}:${minutes}`);
     };
 
-    updateClock(); // Set time immediately
-    const timerId = setInterval(updateClock, 1000); // Update every second to ensure it's always current
+    updateClock();
+    const timerId = setInterval(updateClock, 1000); 
 
-    return () => clearInterval(timerId); // Cleanup on unmount
+    return () => clearInterval(timerId);
   }, []);
 
   // Slideshow logic
@@ -35,6 +37,7 @@ export const Hero: React.FC = () => {
 
   const startSlideshow = () => {
     stopSlideshow(); // Ensure no multiple intervals are running
+    if (isPhoneOff) return;
     intervalRef.current = window.setInterval(() => {
       setCurrentScreenshotIndex(prev => (prev + 1) % screenshots.length);
     }, 5000); // Change image every 5 seconds
@@ -49,7 +52,7 @@ export const Hero: React.FC = () => {
   useEffect(() => {
     startSlideshow();
     return () => stopSlideshow();
-  }, []);
+  }, [isPhoneOff]);
 
   // 3D Tilt Logic
   const ref = useRef<HTMLDivElement>(null);
@@ -63,8 +66,30 @@ export const Hero: React.FC = () => {
   const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-15deg", "15deg"]);
   const sheenX = useTransform(mouseX, [-0.5, 0.5], ["0%", "100%"]);
 
+  // Battery Drain Logic
+  useEffect(() => {
+    const drainDuration = 3600 * 1000; // 1 hour
+    const tickInterval = drainDuration / 100; // Interval per percentage point
+
+    const batteryDrainInterval = setInterval(() => {
+      setBatteryLevel(prevLevel => {
+        if (prevLevel <= 1) {
+          setIsPhoneOff(true);
+          x.set(0); // Reset tilt
+          y.set(0);
+          clearInterval(batteryDrainInterval);
+          return 0;
+        }
+        return prevLevel - 1;
+      });
+    }, tickInterval);
+
+    return () => clearInterval(batteryDrainInterval);
+  }, []);
+
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
+    if (!ref.current || isPhoneOff) return;
     const rect = ref.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
@@ -75,6 +100,7 @@ export const Hero: React.FC = () => {
   };
 
   const handleMouseLeave = () => {
+    if (isPhoneOff) return;
     x.set(0);
     y.set(0);
   };
@@ -83,6 +109,11 @@ export const Hero: React.FC = () => {
     setCurrentScreenshotIndex(index);
     startSlideshow(); // Restart timer from this point
   }
+
+  const getBatteryColor = (level: number) => {
+    if (level <= 20) return '#ef4444'; // red-500
+    return '#4ade80'; // green-400
+  };
 
   return (
     <div className="relative overflow-hidden pt-24 pb-16 sm:pt-32 sm:pb-24 lg:pb-32 bg-gray-900 perspective-1000">
@@ -143,12 +174,22 @@ export const Hero: React.FC = () => {
                 className="absolute inset-0 bg-amber-500/30 blur-[60px] rounded-full -z-10 translate-y-10"
               />
               <div className="relative rounded-[2.5rem] border-[8px] border-gray-900 bg-gray-900 shadow-2xl overflow-hidden aspect-[9/19.5] ring-1 ring-gray-700/50">
-                <div className="absolute top-0 w-full h-6 bg-black/40 z-30 flex items-center justify-between px-6 backdrop-blur-sm pointer-events-none">
+                <div className="absolute top-0 w-full h-6 bg-black/40 z-30 flex items-center justify-between px-4 backdrop-blur-sm pointer-events-none">
                   <div className="text-[10px] text-white font-medium w-9 text-left">{currentTime}</div>
-                  <div className="flex gap-1">
-                     <div className="w-3 h-3 bg-white rounded-full opacity-20"></div>
-                     <div className="w-3 h-3 bg-white rounded-full opacity-20"></div>
-                  </div>
+                  {!isPhoneOff && (
+                    <div className="flex items-center gap-1.5 text-white/70">
+                      <span className="text-[9px] font-medium tabular-nums">{batteryLevel}%</span>
+                      <div className="w-[18px] h-[9px] border border-white/50 rounded-[2px] p-[1px] flex items-center relative">
+                          <motion.div 
+                              className="h-full rounded-[0.5px]"
+                              style={{ backgroundColor: getBatteryColor(batteryLevel) }}
+                              animate={{ width: `${batteryLevel}%` }}
+                              transition={{ duration: 1, ease: "linear" }}
+                          />
+                          <div className="absolute -right-[2px] top-1/2 -translate-y-1/2 w-[1px] h-2 bg-white/50 rounded-r-sm"></div>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
                 {/* Screenshot Carousel */}
@@ -174,31 +215,47 @@ export const Hero: React.FC = () => {
                    />
                 </AnimatePresence>
 
-                <motion.div 
-                  className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 z-40 pointer-events-none"
-                  style={{ 
-                    background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 45%, rgba(255,255,255,0.05) 50%, transparent 54%)",
-                    x: sheenX,
-                    opacity: 1
-                  }}
-                />
+                {/* Black Screen for Off State */}
+                <AnimatePresence>
+                  {isPhoneOff && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 1, delay: 0.2 }}
+                      className="absolute inset-0 bg-black z-40"
+                    />
+                  )}
+                </AnimatePresence>
+
+                {!isPhoneOff && (
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 z-40 pointer-events-none"
+                    style={{ 
+                      background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.1) 45%, rgba(255,255,255,0.05) 50%, transparent 54%)",
+                      x: sheenX,
+                      opacity: 1
+                    }}
+                  />
+                )}
                 <div className="absolute inset-0 rounded-[2rem] ring-1 ring-white/10 pointer-events-none z-50"></div>
               </div>
             </motion.div>
             
             {/* Carousel Indicator Dots */}
-            <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex gap-2.5">
-              {screenshots.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleIndicatorClick(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    currentScreenshotIndex === index ? 'bg-amber-400 scale-125' : 'bg-gray-600 hover:bg-gray-400'
-                  }`}
-                  aria-label={`Go to screenshot ${index + 1}`}
-                />
-              ))}
-            </div>
+            {!isPhoneOff && (
+              <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex gap-2.5">
+                {screenshots.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleIndicatorClick(index)}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      currentScreenshotIndex === index ? 'bg-amber-400 scale-125' : 'bg-gray-600 hover:bg-gray-400'
+                    }`}
+                    aria-label={`Go to screenshot ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
 
             <motion.div 
               animate={{ y: [0, -10, 0] }}
