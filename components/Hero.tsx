@@ -153,7 +153,7 @@ export const Hero: React.FC = () => {
           </div>
 
           {/* 3D Interactive Phone Hero */}
-          <div className="relative lg:col-span-6 w-full max-w-[240px] sm:max-w-[280px] mx-auto lg:max-w-[380px] perspective-container" style={{ perspective: "1200px" }}>
+          <div className="relative lg:col-span-6 w-full max-w-[240px] sm:max-w-[280px] mx-auto lg:max-w-[360px] perspective-container" style={{ perspective: "1200px" }}>
             <motion.div 
               ref={ref}
               style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
