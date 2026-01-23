@@ -123,7 +123,7 @@ export const Hero: React.FC = () => {
         <div className="lg:grid lg:grid-cols-12 lg:gap-16 items-center">
           
           {/* Text Content */}
-          <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left mb-24 lg:mb-0">
+          <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left mb-12 lg:mb-0">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
               <h1 className="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
                 The Pursuit of the <br className="hidden lg:block" />
@@ -153,7 +153,7 @@ export const Hero: React.FC = () => {
           </div>
 
           {/* 3D Interactive Phone Hero */}
-          <div className="relative lg:col-span-6 w-full max-w-[340px] mx-auto lg:max-w-[380px] perspective-container" style={{ perspective: "1200px" }}>
+          <div className="relative lg:col-span-6 w-full max-w-[240px] sm:max-w-[280px] mx-auto lg:max-w-[380px] perspective-container" style={{ perspective: "1200px" }}>
             <motion.div 
               ref={ref}
               style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
