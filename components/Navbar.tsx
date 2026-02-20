@@ -95,15 +95,15 @@ export const Navbar: React.FC = () => {
                          </div>
                       </a>
 
-                      <div className="flex items-center px-4 py-3 text-sm opacity-50 cursor-not-allowed">
-                         <div className="bg-gray-700 p-2 rounded-lg mr-3">
-                           <Smartphone size={20} className="text-gray-400" />
+                      <a href="https://apps.apple.com/in/app/stoutly/id6758011319" className="group flex items-center px-4 py-3 text-sm hover:bg-gray-800 transition-colors">
+                         <div className="bg-blue-500/10 group-hover:bg-blue-500/20 p-2 rounded-lg mr-3 transition-colors">
+                           <Smartphone size={20} className="text-blue-400" />
                          </div>
                          <div className="flex flex-col">
-                           <span className="font-bold text-gray-400">iOS</span>
-                           <span className="text-xs text-gray-500">Coming Soon</span>
+                           <span className="font-bold text-white">iOS</span>
+                           <span className="text-xs text-gray-400">App Store</span>
                          </div>
-                      </div>
+                      </a>
                     </div>
                   </div>
                 )}
@@ -155,10 +155,13 @@ export const Navbar: React.FC = () => {
                    <Smartphone size={18} className="text-green-500 mr-3" />
                    Android App
                 </a>
-                 <div className="flex items-center px-3 py-3 rounded-md text-base font-medium text-gray-500 cursor-not-allowed">
-                   <Smartphone size={18} className="text-gray-600 mr-3" />
-                   iOS (Coming Soon)
-                </div>
+                 <a
+                  href="https://apps.apple.com/in/app/stoutly/id6758011319"
+                  className="flex items-center px-3 py-3 rounded-md text-base font-medium text-white bg-gray-800 hover:bg-gray-700 transition-colors"
+                >
+                   <Smartphone size={18} className="text-blue-400 mr-3" />
+                   iOS App
+                </a>
              </div>
           </div>
         </div>

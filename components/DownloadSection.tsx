@@ -11,7 +11,7 @@ export const DownloadSection: React.FC = () => {
             Start Your Stout Journey
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-10 relative z-10">
-            Join thousands of others in the quest for the perfect pint. Available now on Android and Web.
+            Join thousands of others in the quest for the perfect pint. Available now on iOS, Android and Web.
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
@@ -41,13 +41,16 @@ export const DownloadSection: React.FC = () => {
             </a>
 
             {/* iOS */}
-            <div className="flex items-center justify-center px-6 py-4 bg-gray-800/50 border border-gray-700 rounded-xl cursor-not-allowed opacity-70">
-              <Smartphone className="w-8 h-8 text-gray-500 mr-3" />
+            <a 
+              href="https://apps.apple.com/in/app/stoutly/id6758011319" 
+              className="flex items-center justify-center px-6 py-4 bg-gray-800 border border-gray-600 rounded-xl hover:bg-gray-700 hover:border-amber-400 transition-all group"
+            >
+              <Smartphone className="w-8 h-8 text-blue-400 mr-3 group-hover:scale-110 transition-transform" />
               <div className="text-left">
-                <div className="text-xs text-gray-400">Coming Soon</div>
-                <div className="text-lg font-bold text-gray-400">App Store</div>
+                <div className="text-xs text-gray-400">Download on the</div>
+                <div className="text-lg font-bold text-white">App Store</div>
               </div>
-            </div>
+            </a>
           </div>
           
           {/* Decorative Circle */}

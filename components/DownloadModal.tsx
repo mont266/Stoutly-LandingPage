@@ -57,13 +57,18 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose })
                 </a>
 
                 {/* iOS */}
-                <div className="flex items-center justify-start px-6 py-4 bg-gray-800/50 border border-gray-700 rounded-xl cursor-not-allowed opacity-60 w-full">
-                  <Smartphone className="w-8 h-8 text-gray-500 mr-4" />
+                <a
+                  href="https://apps.apple.com/in/app/stoutly/id6758011319"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-start px-6 py-4 bg-gray-800 border border-gray-600 rounded-xl hover:bg-gray-700 hover:border-amber-400 transition-all group w-full"
+                >
+                  <Smartphone className="w-8 h-8 text-blue-400 mr-4 group-hover:scale-110 transition-transform" />
                   <div className="text-left">
-                    <div className="text-xs text-gray-400">Coming Soon</div>
-                    <div className="text-lg font-bold text-gray-500">App Store</div>
+                    <div className="text-xs text-gray-400">Download on the</div>
+                    <div className="text-lg font-bold text-white">App Store</div>
                   </div>
-                </div>
+                </a>
               </div>
             </motion.div>
           </div>
