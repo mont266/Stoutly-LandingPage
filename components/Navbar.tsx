@@ -75,7 +75,7 @@ export const Navbar: React.FC = () => {
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-64 origin-top-right rounded-xl bg-gray-900 border border-gray-700 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none overflow-hidden animate-in fade-in zoom-in-95 duration-150">
                     <div className="py-1">
-                      <a href="https://app.stoutly.co.uk" className="group flex items-center px-4 py-3 text-sm hover:bg-gray-800 transition-colors">
+                      <a href="https://app.stoutly.co.uk" target="_blank" rel="noopener noreferrer" className="group flex items-center px-4 py-3 text-sm hover:bg-gray-800 transition-colors">
                         <div className="bg-amber-400/10 group-hover:bg-amber-400/20 p-2 rounded-lg mr-3 transition-colors">
                            <Globe size={20} className="text-amber-400" />
                         </div>
@@ -85,7 +85,7 @@ export const Navbar: React.FC = () => {
                         </div>
                       </a>
                       
-                      <a href="https://play.google.com/store/apps/details?id=uk.co.stoutly.twa" className="group flex items-center px-4 py-3 text-sm hover:bg-gray-800 transition-colors">
+                      <a href="https://play.google.com/store/apps/details?id=uk.co.stoutly.twa" target="_blank" rel="noopener noreferrer" className="group flex items-center px-4 py-3 text-sm hover:bg-gray-800 transition-colors">
                          <div className="bg-green-500/10 group-hover:bg-green-500/20 p-2 rounded-lg mr-3 transition-colors">
                            <Smartphone size={20} className="text-green-500" />
                          </div>
@@ -95,7 +95,7 @@ export const Navbar: React.FC = () => {
                          </div>
                       </a>
 
-                      <a href="https://apps.apple.com/in/app/stoutly/id6758011319" className="group flex items-center px-4 py-3 text-sm hover:bg-gray-800 transition-colors">
+                      <a href="https://apps.apple.com/in/app/stoutly/id6758011319" target="_blank" rel="noopener noreferrer" className="group flex items-center px-4 py-3 text-sm hover:bg-gray-800 transition-colors">
                          <div className="bg-blue-500/10 group-hover:bg-blue-500/20 p-2 rounded-lg mr-3 transition-colors">
                            <Smartphone size={20} className="text-blue-400" />
                          </div>
@@ -143,6 +143,8 @@ export const Navbar: React.FC = () => {
                 <div className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Get Stoutly</div>
                 <a
                   href="https://app.stoutly.co.uk"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center px-3 py-3 rounded-md text-base font-medium text-white bg-gray-800 hover:bg-gray-700 transition-colors"
                 >
                    <Globe size={18} className="text-amber-400 mr-3" />
@@ -150,6 +152,8 @@ export const Navbar: React.FC = () => {
                 </a>
                 <a
                   href="https://play.google.com/store/apps/details?id=uk.co.stoutly.twa"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center px-3 py-3 rounded-md text-base font-medium text-white bg-gray-800 hover:bg-gray-700 transition-colors"
                 >
                    <Smartphone size={18} className="text-green-500 mr-3" />
@@ -157,6 +161,8 @@ export const Navbar: React.FC = () => {
                 </a>
                  <a
                   href="https://apps.apple.com/in/app/stoutly/id6758011319"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center px-3 py-3 rounded-md text-base font-medium text-white bg-gray-800 hover:bg-gray-700 transition-colors"
                 >
                    <Smartphone size={18} className="text-blue-400 mr-3" />

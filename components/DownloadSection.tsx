@@ -19,6 +19,8 @@ export const DownloadSection: React.FC = () => {
             {/* Android */}
             <a 
               href="https://play.google.com/store/apps/details?id=uk.co.stoutly.twa" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center justify-center px-6 py-4 bg-gray-800 border border-gray-600 rounded-xl hover:bg-gray-700 hover:border-amber-400 transition-all group"
             >
               <Smartphone className="w-8 h-8 text-green-500 mr-3 group-hover:scale-110 transition-transform" />
@@ -31,6 +33,8 @@ export const DownloadSection: React.FC = () => {
             {/* Web */}
             <a 
               href="https://app.stoutly.co.uk" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center justify-center px-6 py-4 bg-gray-800 border border-gray-600 rounded-xl hover:bg-gray-700 hover:border-amber-400 transition-all group"
             >
               <Globe className="w-8 h-8 text-amber-400 mr-3 group-hover:scale-110 transition-transform" />
@@ -43,6 +47,8 @@ export const DownloadSection: React.FC = () => {
             {/* iOS */}
             <a 
               href="https://apps.apple.com/in/app/stoutly/id6758011319" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center justify-center px-6 py-4 bg-gray-800 border border-gray-600 rounded-xl hover:bg-gray-700 hover:border-amber-400 transition-all group"
             >
               <Smartphone className="w-8 h-8 text-blue-400 mr-3 group-hover:scale-110 transition-transform" />
