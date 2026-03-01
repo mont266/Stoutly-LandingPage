@@ -74,6 +74,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
             className="space-y-4"
           >
             <input type="hidden" name="form-name" value="contact" />
+            <input name="bot-field" hidden />
             
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
