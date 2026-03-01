@@ -3,7 +3,7 @@ import { DownloadCloud, ImageIcon, FileText, Palette, AtSign } from 'lucide-reac
 import { Logo } from './Logo';
 
 export const PressKit: React.FC = () => {
-  const pressKitZipUrl = 'public/Stoutly-PressKit.zip'; // Placeholder for the actual zip file URL
+  const pressKitZipUrl = 'Stoutly-PressKit.zip'; // Placeholder for the actual zip file URL
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
