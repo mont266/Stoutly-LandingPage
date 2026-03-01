@@ -25,7 +25,7 @@ export const PressKit: React.FC = () => {
             className="inline-flex items-center justify-center px-8 py-4 bg-amber-400 text-gray-900 rounded-full font-bold transition-all transform hover:scale-105 shadow-lg"
           >
             <DownloadCloud className="w-6 h-6 mr-3" />
-            Download .zip (24MB)
+            Download .zip (8.34MB)
           </a>
         </div>
 
