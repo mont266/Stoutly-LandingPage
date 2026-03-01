@@ -2,15 +2,16 @@ import React from 'react';
 
 interface LogoProps {
   className?: string;
+  isWhite?: boolean;
 }
 
-export const Logo: React.FC<LogoProps> = ({ className = "w-12 h-12" }) => {
+export const Logo: React.FC<LogoProps> = ({ className = "w-12 h-12", isWhite = false }) => {
   return (
     <svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg' className={className}>
       <g transform='translate(0 2)'>
         <path 
           d='M50 5 C 29.5 5, 12.5 22.5, 12.5 42.5 C 12.5 67.5, 50 95, 50 95 C 50 95, 87.5 67.5, 87.5 42.5 C 87.5 22.5, 70.5 5, 50 5 Z' 
-          fill='#1A120F'
+          fill={isWhite ? '#FFFFFF' : '#1A120F'}
           stroke='#F59E0B'
           strokeWidth='4'
           className="stoutly-logo-stroke"

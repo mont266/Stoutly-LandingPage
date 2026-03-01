@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Logo } from './Logo';
 import { Instagram, Facebook } from 'lucide-react';
+import { ContactModal } from './ContactModal';
 
 export const Footer: React.FC = () => {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
   return (
     <footer className="bg-gray-900 border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -15,9 +19,15 @@ export const Footer: React.FC = () => {
           
           {/* Links & Socials */}
           <div className="flex items-center flex-wrap justify-center gap-x-6 gap-y-4">
-            <a href="#" className="text-sm text-gray-400 hover:text-amber-400 transition-colors">Privacy</a>
-            <a href="#" className="text-sm text-gray-400 hover:text-amber-400 transition-colors">Terms</a>
-            <a href="mailto:hello@stoutly.co.uk" className="text-sm text-gray-400 hover:text-amber-400 transition-colors">Contact</a>
+            <a href="https://app.stoutly.co.uk/?page=privacy" className="text-sm text-gray-400 hover:text-amber-400 transition-colors">Privacy</a>
+            <a href="https://app.stoutly.co.uk/?page=terms" className="text-sm text-gray-400 hover:text-amber-400 transition-colors">Terms</a>
+            <Link to="/press" className="text-sm text-gray-400 hover:text-amber-400 transition-colors">Press</Link>
+            <button 
+              onClick={() => setIsContactModalOpen(true)}
+              className="text-sm text-gray-400 hover:text-amber-400 transition-colors"
+            >
+              Contact
+            </button>
             
             <div className="w-px h-5 bg-gray-700 hidden sm:block"></div> {/* Separator */}
 
@@ -50,6 +60,11 @@ export const Footer: React.FC = () => {
           <p className="mt-2 text-xs">Drink responsibly. Sláinte.</p>
         </div>
       </div>
+
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+      />
     </footer>
   );
 };
