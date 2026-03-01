@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Logo } from './Logo';
 import { Menu, X, ChevronDown, Globe, Smartphone } from 'lucide-react';
 
@@ -8,6 +8,8 @@ export const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,6 +30,29 @@ export const Navbar: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    if (href.startsWith('#')) {
+      const targetId = href.substring(1);
+      if (location.pathname !== '/') {
+        navigate('/');
+        // Wait for navigation to complete then scroll
+        setTimeout(() => {
+          const element = document.getElementById(targetId);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      } else {
+        const element = document.getElementById(targetId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+    setIsMobileMenuOpen(false);
+  };
 
   const navLinks = [
     { label: 'Features', href: '#features' },
@@ -57,7 +82,8 @@ export const Navbar: React.FC = () => {
                 <a
                   key={link.label}
                   href={link.href}
-                  className="text-gray-300 hover:text-amber-400 transition-colors px-3 py-2 rounded-md text-sm font-medium"
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className="text-gray-300 hover:text-amber-400 transition-colors px-3 py-2 rounded-md text-sm font-medium cursor-pointer"
                 >
                   {link.label}
                 </a>
@@ -132,8 +158,8 @@ export const Navbar: React.FC = () => {
               <a
                 key={link.label}
                 href={link.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-gray-300 hover:text-amber-400 block px-3 py-2 rounded-md text-base font-medium"
+                onClick={(e) => handleNavClick(e, link.href)}
+                className="text-gray-300 hover:text-amber-400 block px-3 py-2 rounded-md text-base font-medium cursor-pointer"
               >
                 {link.label}
               </a>
