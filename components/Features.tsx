@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe, Activity, Trophy, Users, History, Share2 } from 'lucide-react';
+import { Globe, Activity, Trophy, Users, History, Map } from 'lucide-react';
 import { Feature } from '../types';
 
 const features: Feature[] = [
@@ -29,9 +29,9 @@ const features: Feature[] = [
     icon: <Users className="w-6 h-6 text-amber-400" />,
   },
   {
-    title: 'Shareable Stat Cards',
-    description: "Turn your data into art. Generate beautiful infographic cards for your profile or favorite pubs to share on social media.",
-    icon: <Share2 className="w-6 h-6 text-amber-400" />,
+    title: 'Pub Crawl Planner',
+    description: "Plan the perfect route. Balance convenience with quality, customize your stops, and use 'Crawl Mode' for live navigation.",
+    icon: <Map className="w-6 h-6 text-amber-400" />,
   },
 ];
 
@@ -44,10 +44,10 @@ export const Features: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center">
-          <h2 className="text-base text-amber-400 font-semibold tracking-wide uppercase">Features</h2>
-          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
+          <p className="text-base text-amber-400 font-semibold tracking-wide uppercase">Features</p>
+          <h2 className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl">
             More Than Just A Rating App
-          </p>
+          </h2>
           <p className="mt-4 max-w-2xl text-xl text-gray-400 mx-auto">
             Stoutly merges social connection, deep data, and fun gamification to help you find the perfect pint.
           </p>

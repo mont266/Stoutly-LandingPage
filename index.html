@@ -3,8 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Stoutly - The Pursuit of the Perfect Pint</title>
+    <title>Stoutly - The Pursuit of the Perfect Pint | Guinness Pint Tracking App</title>
+    <meta name="description" content="Stoutly is the ultimate companion for Guinness lovers. Plan pub crawls, track your pint history with the Pint Passport, and discover the best-rated Guinness and stouts globally." />
+    <meta name="keywords" content="stout, guinness, pub crawl, pint passport, pub ratings, beer app, craft beer, pub planner" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://stoutly.co.uk/" />
+    <meta property="og:title" content="Stoutly - The Pursuit of the Perfect Pint | Guinness Pint Tracking App" />
+    <meta property="og:description" content="Plan pub crawls, track your pint history, and discover the best-rated Guinness globally with the Stoutly app." />
+    <meta property="og:image" content="https://stoutly.co.uk/images/og-image.jpg" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://stoutly.co.uk/" />
+    <meta property="twitter:title" content="Stoutly - The Pursuit of the Perfect Pint | Guinness Pint Tracking App" />
+    <meta property="twitter:description" content="Plan pub crawls, track your pint history, and discover the best-rated Guinness globally with the Stoutly app." />
+    <meta property="twitter:image" content="https://stoutly.co.uk/images/og-image.jpg" />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://stoutly.co.uk/" />
+
+    <!-- JSON-LD Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Stoutly",
+      "operatingSystem": "iOS, Android, Web",
+      "applicationCategory": "FoodAndDrinkApplication",
+      "description": "The ultimate companion for stout lovers. Plan pub crawls, track pint history, and find the best-rated Guinness.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "GBP"
+      }
+    }
+    </script>
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5BTPBWHQWB"></script>
@@ -75,6 +110,16 @@
 <link rel="stylesheet" href="/index.css">
 </head>
   <body>
+    <!-- SEO Shadow Navigation (Hidden from users, visible to crawlers) -->
+    <nav style="display:none;" aria-hidden="true">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#download">Download</a></li>
+        <li><a href="/press">Press Kit</a></li>
+      </ul>
+    </nav>
+
     <!-- Hidden Netlify Form for detection -->
     <form name="contact" netlify netlify-honeypot="bot-field" hidden>
       <input type="hidden" name="form-name" value="contact" />
