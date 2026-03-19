@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
+import { FeaturedIn } from './components/FeaturedIn';
 import { Features } from './components/Features';
 import { DownloadSection } from './components/DownloadSection';
 import { Footer } from './components/Footer';
@@ -10,6 +11,7 @@ import { PressKit } from './components/PressKit';
 const Home = () => (
   <>
     <Hero />
+    <FeaturedIn />
     <Features />
     <DownloadSection />
   </>
