@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Map, { Marker, NavigationControl, MapRef } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { supabase } from '../lib/supabase';
-import { X, Star, Map as MapIcon, List as ListIcon, ChevronLeft, Menu } from 'lucide-react';
+import { X, Star, Map as MapIcon, List as ListIcon, ChevronLeft, Menu, ArrowUpDown } from 'lucide-react';
 import { Logo } from './Logo';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || '';
@@ -113,6 +113,7 @@ type Rating = {
   message: string | null;
   image_url: string | null;
   is_private: boolean;
+  created_at: string;
   pub_score?: number;
   pubs: {
     name: string;
@@ -135,6 +136,7 @@ export const PublicMap: React.FC = () => {
   const [selectedRating, setSelectedRating] = useState<Rating | null>(null);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<'recent' | 'highest' | 'lowest' | 'name'>('recent');
   const [viewState, setViewState] = useState({
     longitude: -0.1276,
     latitude: 51.5074,
@@ -163,7 +165,7 @@ export const PublicMap: React.FC = () => {
             [minLng, minLat],
             [maxLng, maxLat]
           ],
-          { padding: 50, duration: 1000 }
+          { padding: 120, duration: 1000 }
         );
       }
     }
@@ -224,6 +226,7 @@ export const PublicMap: React.FC = () => {
             message,
             image_url,
             is_private,
+            created_at,
             pubs (
               name,
               lat,
@@ -288,6 +291,23 @@ export const PublicMap: React.FC = () => {
       if (ogDesc) ogDesc.setAttribute('content', `Check out my Guinness ratings on Stoutly!`);
     }
   }, [profile]);
+
+  const sortedRatings = React.useMemo(() => {
+    return [...ratings].sort((a, b) => {
+      switch (sortBy) {
+        case 'recent':
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case 'highest':
+          return (b.pub_score || b.quality) - (a.pub_score || a.quality);
+        case 'lowest':
+          return (a.pub_score || a.quality) - (b.pub_score || b.quality);
+        case 'name':
+          return a.pubs.name.localeCompare(b.pubs.name);
+        default:
+          return 0;
+      }
+    });
+  }, [ratings, sortBy]);
 
   if (loading) {
     return (
@@ -385,7 +405,7 @@ export const PublicMap: React.FC = () => {
                   <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-gray-400 mt-0.5 leading-none">
                     <span className="flex items-center gap-0.5 font-medium text-amber-400">
                       <Star size={10} className="fill-amber-400 sm:w-3 sm:h-3" /> 
-                      {profile.reviews || 0}
+                      {ratings.length || 0}
                     </span>
                     <span>•</span>
                     <span>Lvl {profile.level || 1}</span>
@@ -424,7 +444,25 @@ export const PublicMap: React.FC = () => {
           ${!isSidebarOpen ? 'md:-ml-[350px] lg:-ml-[400px]' : 'md:ml-0'}
         `}>
           <div className="flex flex-col gap-4 px-4 sm:px-6 md:px-4 pb-6">
-            {ratings.map(rating => (
+            {/* Sort Controls */}
+            <div className="flex items-center justify-between bg-gray-800/50 p-2 rounded-xl border border-gray-700">
+              <div className="flex items-center gap-2 text-gray-400 text-sm pl-2">
+                <ArrowUpDown size={14} />
+                <span className="font-medium">Sort by</span>
+              </div>
+              <select 
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'recent' | 'highest' | 'lowest' | 'name')}
+                className="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:ring-amber-400 focus:border-amber-400 block p-1.5 outline-none"
+              >
+                <option value="recent">Most Recent</option>
+                <option value="highest">Highest Rated</option>
+                <option value="lowest">Lowest Rated</option>
+                <option value="name">Name (A-Z)</option>
+              </select>
+            </div>
+
+            {sortedRatings.map(rating => (
               <div 
                 key={rating.id} 
                 onClick={() => setSelectedRating(rating)}
@@ -489,6 +527,33 @@ export const PublicMap: React.FC = () => {
               ref={mapRef}
               {...viewState}
               onMove={evt => setViewState(evt.viewState)}
+              onLoad={() => {
+                if (ratings.length > 0 && mapRef.current) {
+                  const lats = ratings.map(r => r.pubs.lat);
+                  const lngs = ratings.map(r => r.pubs.lng);
+                  
+                  const minLat = Math.min(...lats);
+                  const maxLat = Math.max(...lats);
+                  const minLng = Math.min(...lngs);
+                  const maxLng = Math.max(...lngs);
+                  
+                  if (ratings.length === 1) {
+                    setViewState({
+                      longitude: lngs[0],
+                      latitude: lats[0],
+                      zoom: 14
+                    });
+                  } else {
+                    mapRef.current.fitBounds(
+                      [
+                        [minLng, minLat],
+                        [maxLng, maxLat]
+                      ],
+                      { padding: 120, duration: 1000 }
+                    );
+                  }
+                }
+              }}
               mapStyle="mapbox://styles/mapbox/dark-v11"
               mapboxAccessToken={MAPBOX_TOKEN}
               style={{ width: '100%', height: '100%' }}

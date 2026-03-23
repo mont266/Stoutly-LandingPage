@@ -5,7 +5,7 @@ import { Feature } from '../types';
 const features: Feature[] = [
   {
     title: 'Smart Pub Scores',
-    description: "Our weighted algorithm (60% Quality, 40% Price) combined with a Confidence Multiplier gives you a score you can trust.",
+    description: "Our weighted algorithm (70% Quality, 30% Price) combined with a Confidence Multiplier gives you a score you can trust.",
     icon: <Activity className="w-6 h-6 text-amber-400" />,
   },
   {
