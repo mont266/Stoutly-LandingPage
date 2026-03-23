@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Map, { Marker, NavigationControl, MapRef } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { supabase } from '../lib/supabase';
-import { X, Star } from 'lucide-react';
+import { X, Star, Map as MapIcon, List as ListIcon, ChevronLeft, Menu } from 'lucide-react';
 import { Logo } from './Logo';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || '';
@@ -133,6 +133,8 @@ export const PublicMap: React.FC = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [ratings, setRatings] = useState<Rating[]>([]);
   const [selectedRating, setSelectedRating] = useState<Rating | null>(null);
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [viewState, setViewState] = useState({
     longitude: -0.1276,
     latitude: 51.5074,
@@ -166,6 +168,17 @@ export const PublicMap: React.FC = () => {
       }
     }
   }, [ratings]);
+
+  // Force map resize when sidebar toggles
+  useEffect(() => {
+    if (mapRef.current) {
+      mapRef.current.resize();
+      const timeout = setTimeout(() => {
+        mapRef.current?.resize();
+      }, 300);
+      return () => clearTimeout(timeout);
+    }
+  }, [isSidebarOpen, viewMode]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -319,7 +332,7 @@ export const PublicMap: React.FC = () => {
         }
       `}</style>
       {/* Map Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 pointer-events-none flex flex-col">
+      <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none flex flex-col">
         {/* See-through Header (Mobile Only) */}
         <div className="sm:hidden w-full bg-gray-900/40 backdrop-blur-md border-b border-gray-800/50 p-2.5 flex justify-center items-center pointer-events-auto">
           <a href="/" className="flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity">
@@ -330,90 +343,180 @@ export const PublicMap: React.FC = () => {
 
         {/* Gradient Background for User Stats */}
         <div className="bg-gradient-to-b from-gray-900/80 via-gray-900/40 to-transparent p-3 sm:p-4 md:p-6 w-full">
-          <div className="max-w-7xl mx-auto flex justify-center sm:justify-between items-start">
-            {/* Desktop Logo */}
-            <a href="/" className="hidden sm:flex items-center gap-2 pointer-events-auto">
-              <Logo className="w-10 h-10" />
-              <span className="text-xl font-bold text-white drop-shadow-md">Stoutly</span>
-            </a>
+          <div className="w-full px-2 sm:px-4 flex justify-center sm:justify-between items-start">
+            {/* Desktop Logo & Toggle */}
+            <div className="hidden sm:flex items-center gap-4 pointer-events-auto">
+              <button 
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="p-2.5 bg-gray-900/80 hover:bg-gray-800 backdrop-blur-md border border-gray-700 rounded-xl text-gray-400 hover:text-white transition-colors shadow-lg flex items-center justify-center"
+                title={isSidebarOpen ? "Hide list" : "Show list"}
+              >
+                {isSidebarOpen ? <ChevronLeft size={20} /> : <Menu size={20} />}
+              </button>
+              <a href="/" className="flex items-center gap-2">
+                <Logo className="w-10 h-10" />
+                <span className="text-xl font-bold text-white drop-shadow-md">Stoutly</span>
+              </a>
+            </div>
             
-            {/* User Stats Card */}
-            <div className="bg-gray-900/80 backdrop-blur-md p-1.5 pr-3 sm:p-4 rounded-full sm:rounded-2xl border border-gray-700 pointer-events-auto flex items-center gap-2 sm:gap-3 shadow-lg max-w-[280px] sm:max-w-sm">
-              {getAvatarUrl(profile.avatar_id, profile.username) ? (
-                <img 
-                  src={getAvatarUrl(profile.avatar_id, profile.username)!} 
-                  alt={profile.username} 
-                  className="w-8 h-8 sm:w-12 sm:h-12 rounded-full object-cover border border-amber-400/50" 
-                  referrerPolicy="no-referrer" 
-                />
-              ) : (
-                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-800 rounded-full flex items-center justify-center text-amber-400 font-bold text-sm sm:text-xl border border-amber-400/50">
-                  {profile.username.charAt(0).toUpperCase()}
+            {/* User Stats Card and Toggle */}
+            <div className="flex flex-col items-center sm:items-end gap-3 pointer-events-auto">
+              <div className="bg-gray-900/80 backdrop-blur-md p-1.5 pr-3 sm:p-4 rounded-full sm:rounded-2xl border border-gray-700 flex items-center gap-2 sm:gap-3 shadow-lg max-w-[280px] sm:max-w-sm">
+                {getAvatarUrl(profile.avatar_id, profile.username) ? (
+                  <img 
+                    src={getAvatarUrl(profile.avatar_id, profile.username)!} 
+                    alt={profile.username} 
+                    className="w-8 h-8 sm:w-12 sm:h-12 rounded-full object-cover border border-amber-400/50" 
+                    referrerPolicy="no-referrer" 
+                  />
+                ) : (
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-800 rounded-full flex items-center justify-center text-amber-400 font-bold text-sm sm:text-xl border border-amber-400/50">
+                    {profile.username.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="flex flex-col justify-center">
+                  <div className="flex items-center gap-1 sm:gap-1.5">
+                    <span className="text-white font-semibold text-xs sm:text-base truncate max-w-[120px] sm:max-w-[160px] leading-none">@{profile.username}</span>
+                    {profile.is_stoutly_legend && <span title="Stoutly Legend" className="text-[10px] sm:text-sm leading-none">👑</span>}
+                    {profile.is_developer && <span title="Developer" className="text-[10px] sm:text-sm leading-none">💻</span>}
+                    {profile.is_beta_tester && <span title="Beta Tester" className="text-[10px] sm:text-sm leading-none">🧪</span>}
+                    {profile.is_early_bird && <span title="Early Bird" className="text-[10px] sm:text-sm leading-none">🐦</span>}
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-gray-400 mt-0.5 leading-none">
+                    <span className="flex items-center gap-0.5 font-medium text-amber-400">
+                      <Star size={10} className="fill-amber-400 sm:w-3 sm:h-3" /> 
+                      {profile.reviews || 0}
+                    </span>
+                    <span>•</span>
+                    <span>Lvl {profile.level || 1}</span>
+                  </div>
                 </div>
-              )}
-              <div className="flex flex-col justify-center">
-                <div className="flex items-center gap-1 sm:gap-1.5">
-                  <span className="text-white font-semibold text-xs sm:text-base truncate max-w-[120px] sm:max-w-[160px] leading-none">@{profile.username}</span>
-                  {profile.is_stoutly_legend && <span title="Stoutly Legend" className="text-[10px] sm:text-sm leading-none">👑</span>}
-                  {profile.is_developer && <span title="Developer" className="text-[10px] sm:text-sm leading-none">💻</span>}
-                  {profile.is_beta_tester && <span title="Beta Tester" className="text-[10px] sm:text-sm leading-none">🧪</span>}
-                  {profile.is_early_bird && <span title="Early Bird" className="text-[10px] sm:text-sm leading-none">🐦</span>}
-                </div>
-                <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-gray-400 mt-0.5 leading-none">
-                  <span className="flex items-center gap-0.5 font-medium text-amber-400">
-                    <Star size={10} className="fill-amber-400 sm:w-3 sm:h-3" /> 
-                    {profile.reviews || 0}
-                  </span>
-                  <span>•</span>
-                  <span>Lvl {profile.level || 1}</span>
-                </div>
+              </div>
+
+              {/* View Toggle */}
+              <div className="flex md:hidden bg-gray-900/80 backdrop-blur-md p-1 rounded-full border border-gray-700 shadow-lg">
+                <button
+                  onClick={() => setViewMode('map')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors ${viewMode === 'map' ? 'bg-amber-400 text-gray-900' : 'text-gray-400 hover:text-white'}`}
+                >
+                  <MapIcon size={14} className="sm:w-4 sm:h-4" /> <span>Map</span>
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors ${viewMode === 'list' ? 'bg-amber-400 text-gray-900' : 'text-gray-400 hover:text-white'}`}
+                >
+                  <ListIcon size={14} className="sm:w-4 sm:h-4" /> <span>List</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Map Container */}
-      <div className="flex-1 w-full relative">
-        {!MAPBOX_TOKEN ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-800 text-center p-4">
-            <div>
-              <p className="text-amber-400 font-bold mb-2">Mapbox Token Missing</p>
-              <p className="text-gray-400 text-sm">Please provide VITE_MAPBOX_ACCESS_TOKEN in your environment variables.</p>
-            </div>
-          </div>
-        ) : (
-          <Map
-            ref={mapRef}
-            {...viewState}
-            onMove={evt => setViewState(evt.viewState)}
-            mapStyle="mapbox://styles/mapbox/dark-v11"
-            mapboxAccessToken={MAPBOX_TOKEN}
-            style={{ width: '100%', height: '100%' }}
-          >
-            <NavigationControl position="top-right" />
-            
-            {ratings.map((rating) => (
-              <Marker
-                key={rating.id}
-                longitude={rating.pubs.lng}
-                latitude={rating.pubs.lat}
-                anchor="bottom"
-                onClick={e => {
-                  e.originalEvent.stopPropagation();
-                  setSelectedRating(rating);
-                }}
+      {/* Main Content Area */}
+      <div className="flex-1 flex w-full relative overflow-hidden">
+        {/* List View Container (Sidebar on Desktop) */}
+        <div className={`
+          ${viewMode === 'map' ? 'hidden md:flex' : 'flex'} 
+          absolute inset-0 md:relative flex-col bg-gray-900 md:border-r border-gray-800 z-10
+          pt-[160px] sm:pt-[140px] md:pt-[120px] pb-32 md:pb-0 overflow-y-auto transition-all duration-300 ease-in-out
+          w-full md:w-[350px] lg:w-[400px] flex-shrink-0
+          ${!isSidebarOpen ? 'md:-ml-[350px] lg:-ml-[400px]' : 'md:ml-0'}
+        `}>
+          <div className="flex flex-col gap-4 px-4 sm:px-6 md:px-4 pb-6">
+            {ratings.map(rating => (
+              <div 
+                key={rating.id} 
+                onClick={() => setSelectedRating(rating)}
+                className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 hover:border-amber-400/50 rounded-2xl p-4 cursor-pointer transition-all hover:bg-gray-800 flex gap-4 items-center shadow-sm hover:shadow-md"
               >
-                <PubIcon />
-              </Marker>
+                {/* Thumbnail */}
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-900 rounded-xl flex-shrink-0 overflow-hidden border border-gray-700">
+                  {rating.image_url ? (
+                    <img src={rating.image_url} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-600">
+                      <PubIcon color="#4B5563" />
+                    </div>
+                  )}
+                </div>
+                {/* Info */}
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                  <h4 className="text-white font-bold truncate text-sm sm:text-base">{rating.pubs.name}</h4>
+                  <p className="text-gray-400 text-xs truncate mb-2">{rating.pubs.address || 'No address provided'}</p>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1">
+                      <Star size={12} className="fill-amber-400 text-amber-400" />
+                      <span className="text-xs font-medium text-white">{rating.quality}/5</span>
+                    </div>
+                    {rating.pub_score !== undefined && (
+                      <div className="flex items-center gap-1.5">
+                        <div 
+                          className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold" 
+                          style={{ backgroundColor: getScoreColor(rating.pub_score).bg, color: getScoreColor(rating.pub_score).hex, border: `1px solid ${getScoreColor(rating.pub_score).hex}` }}
+                        >
+                          {rating.pub_score}
+                        </div>
+                        <span className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold">Score</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             ))}
-          </Map>
-        )}
+            {ratings.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-gray-400">No ratings found.</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Map Container */}
+        <div className={`
+          ${viewMode === 'list' ? 'hidden md:block' : 'block'} 
+          flex-1 relative bg-gray-800 transition-all duration-300
+        `}>
+          {!MAPBOX_TOKEN ? (
+            <div className="absolute inset-0 flex items-center justify-center text-center p-4">
+              <div>
+                <p className="text-amber-400 font-bold mb-2">Mapbox Token Missing</p>
+                <p className="text-gray-400 text-sm">Please provide VITE_MAPBOX_ACCESS_TOKEN in your environment variables.</p>
+              </div>
+            </div>
+          ) : (
+            <Map
+              ref={mapRef}
+              {...viewState}
+              onMove={evt => setViewState(evt.viewState)}
+              mapStyle="mapbox://styles/mapbox/dark-v11"
+              mapboxAccessToken={MAPBOX_TOKEN}
+              style={{ width: '100%', height: '100%' }}
+            >
+              <NavigationControl position="top-right" />
+              
+              {ratings.map((rating) => (
+                <Marker
+                  key={rating.id}
+                  longitude={rating.pubs.lng}
+                  latitude={rating.pubs.lat}
+                  anchor="bottom"
+                  onClick={e => {
+                    e.originalEvent.stopPropagation();
+                    setSelectedRating(rating);
+                  }}
+                >
+                  <PubIcon />
+                </Marker>
+              ))}
+            </Map>
+          )}
+        </div>
       </div>
 
       {/* Interactive Card (Bottom Sheet / Sidebar) */}
       {selectedRating && (
-        <div className="absolute bottom-0 left-0 right-0 md:bottom-auto md:top-24 md:left-6 md:right-auto md:w-96 z-20 animate-in slide-in-from-bottom md:slide-in-from-left duration-300">
+        <div className={`absolute bottom-0 left-0 right-0 md:bottom-auto md:top-24 md:right-auto md:w-96 z-30 animate-in slide-in-from-bottom md:slide-in-from-left transition-all duration-300 ease-in-out ${isSidebarOpen ? 'md:left-[374px] lg:left-[424px]' : 'md:left-6'}`}>
           <div className="bg-gray-900 border-t md:border border-gray-700 rounded-t-3xl md:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] md:max-h-[calc(100vh-8rem)]">
             
             {/* Header with Close Button */}
