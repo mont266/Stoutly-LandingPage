@@ -278,7 +278,7 @@ export const PublicMap: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-gray-900 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-400"></div>
       </div>
     );
@@ -286,7 +286,7 @@ export const PublicMap: React.FC = () => {
 
   if (error || !profile) {
     return (
-      <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-4 text-center">
+      <div className="min-h-[100dvh] bg-gray-900 flex flex-col items-center justify-center p-4 text-center">
         <div className="bg-gray-800 p-8 rounded-2xl max-w-md w-full border border-gray-700 shadow-xl">
           <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -306,44 +306,67 @@ export const PublicMap: React.FC = () => {
   }
 
   return (
-    <div className="relative w-full h-screen bg-gray-900 overflow-hidden flex flex-col">
+    <div className="relative w-full h-[100dvh] bg-gray-900 overflow-hidden flex flex-col">
+      <style>{`
+        @media (max-width: 640px) {
+          .mapboxgl-ctrl-group {
+            transform: scale(0.75);
+            transform-origin: top right;
+          }
+          .mapboxgl-ctrl-top-right {
+            top: 110px !important;
+          }
+        }
+      `}</style>
       {/* Map Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-gray-900/90 to-transparent p-4 md:p-6 pointer-events-none">
-        <div className="max-w-7xl mx-auto flex justify-between items-start">
-          <a href="/" className="flex items-center gap-2 pointer-events-auto">
-            <Logo className="w-10 h-10" />
-            <span className="text-xl font-bold text-white drop-shadow-md hidden sm:block">Stoutly</span>
+      <div className="absolute top-0 left-0 right-0 z-10 pointer-events-none flex flex-col">
+        {/* See-through Header (Mobile Only) */}
+        <div className="sm:hidden w-full bg-gray-900/40 backdrop-blur-md border-b border-gray-800/50 p-2.5 flex justify-center items-center pointer-events-auto">
+          <a href="/" className="flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity">
+            <Logo className="w-5 h-5" />
+            <span className="text-base font-bold text-white tracking-tight">Stoutly</span>
           </a>
-          
-          {/* User Stats Card */}
-          <div className="bg-gray-900/80 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-gray-700 pointer-events-auto flex items-center gap-3 shadow-lg max-w-xs sm:max-w-sm">
-            {getAvatarUrl(profile.avatar_id, profile.username) ? (
-              <img 
-                src={getAvatarUrl(profile.avatar_id, profile.username)!} 
-                alt={profile.username} 
-                className="w-12 h-12 rounded-full object-cover border-2 border-amber-400/50" 
-                referrerPolicy="no-referrer" 
-              />
-            ) : (
-              <div className="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center text-amber-400 font-bold text-xl border-2 border-amber-400/50">
-                {profile.username.charAt(0).toUpperCase()}
-              </div>
-            )}
-            <div className="flex flex-col">
-              <div className="flex items-center gap-1.5">
-                <span className="text-white font-bold truncate max-w-[120px] sm:max-w-[160px]">@{profile.username}</span>
-                {profile.is_stoutly_legend && <span title="Stoutly Legend">👑</span>}
-                {profile.is_developer && <span title="Developer">💻</span>}
-                {profile.is_beta_tester && <span title="Beta Tester">🧪</span>}
-                {profile.is_early_bird && <span title="Early Bird">🐦</span>}
-              </div>
-              <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
-                <span className="flex items-center gap-1 font-medium text-amber-400">
-                  <Star size={12} className="fill-amber-400" /> 
-                  {profile.reviews || 0} Ratings
-                </span>
-                <span>•</span>
-                <span>Level {profile.level || 1}</span>
+        </div>
+
+        {/* Gradient Background for User Stats */}
+        <div className="bg-gradient-to-b from-gray-900/80 via-gray-900/40 to-transparent p-3 sm:p-4 md:p-6 w-full">
+          <div className="max-w-7xl mx-auto flex justify-center sm:justify-between items-start">
+            {/* Desktop Logo */}
+            <a href="/" className="hidden sm:flex items-center gap-2 pointer-events-auto">
+              <Logo className="w-10 h-10" />
+              <span className="text-xl font-bold text-white drop-shadow-md">Stoutly</span>
+            </a>
+            
+            {/* User Stats Card */}
+            <div className="bg-gray-900/80 backdrop-blur-md p-1.5 pr-3 sm:p-4 rounded-full sm:rounded-2xl border border-gray-700 pointer-events-auto flex items-center gap-2 sm:gap-3 shadow-lg max-w-[280px] sm:max-w-sm">
+              {getAvatarUrl(profile.avatar_id, profile.username) ? (
+                <img 
+                  src={getAvatarUrl(profile.avatar_id, profile.username)!} 
+                  alt={profile.username} 
+                  className="w-8 h-8 sm:w-12 sm:h-12 rounded-full object-cover border border-amber-400/50" 
+                  referrerPolicy="no-referrer" 
+                />
+              ) : (
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-800 rounded-full flex items-center justify-center text-amber-400 font-bold text-sm sm:text-xl border border-amber-400/50">
+                  {profile.username.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div className="flex flex-col justify-center">
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <span className="text-white font-semibold text-xs sm:text-base truncate max-w-[120px] sm:max-w-[160px] leading-none">@{profile.username}</span>
+                  {profile.is_stoutly_legend && <span title="Stoutly Legend" className="text-[10px] sm:text-sm leading-none">👑</span>}
+                  {profile.is_developer && <span title="Developer" className="text-[10px] sm:text-sm leading-none">💻</span>}
+                  {profile.is_beta_tester && <span title="Beta Tester" className="text-[10px] sm:text-sm leading-none">🧪</span>}
+                  {profile.is_early_bird && <span title="Early Bird" className="text-[10px] sm:text-sm leading-none">🐦</span>}
+                </div>
+                <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-gray-400 mt-0.5 leading-none">
+                  <span className="flex items-center gap-0.5 font-medium text-amber-400">
+                    <Star size={10} className="fill-amber-400 sm:w-3 sm:h-3" /> 
+                    {profile.reviews || 0}
+                  </span>
+                  <span>•</span>
+                  <span>Lvl {profile.level || 1}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -476,7 +499,7 @@ export const PublicMap: React.FC = () => {
               
               {/* Photo */}
               {selectedRating.image_url && (
-                <div className="w-full h-48 rounded-xl overflow-hidden mb-4 bg-gray-800 flex items-center justify-center">
+                <div className="w-full h-32 sm:h-48 rounded-xl overflow-hidden mb-4 bg-gray-800 flex items-center justify-center">
                   <img 
                     src={selectedRating.image_url} 
                     alt={`Pint at ${selectedRating.pubs.name}`} 
@@ -498,10 +521,10 @@ export const PublicMap: React.FC = () => {
             </div>
             
             {/* Sticky CTA */}
-            <div className="p-4 border-t border-gray-800 bg-gray-900 sticky bottom-0">
+            <div className="p-3 sm:p-4 border-t border-gray-800 bg-gray-900 sticky bottom-0">
               <a 
                 href="/" 
-                className="block w-full bg-amber-400 text-gray-900 text-center font-bold py-3 px-4 rounded-xl hover:bg-amber-300 transition-colors shadow-[0_0_15px_rgba(245,158,11,0.3)]"
+                className="block w-full bg-amber-400 text-gray-900 text-center font-bold py-2.5 sm:py-3 px-4 rounded-xl hover:bg-amber-300 transition-colors shadow-[0_0_15px_rgba(245,158,11,0.3)] text-sm sm:text-base"
               >
                 Rate your own pints on Stoutly
               </a>
@@ -512,10 +535,10 @@ export const PublicMap: React.FC = () => {
       
       {/* Global Mobile CTA (when no card is selected) */}
       {!selectedRating && (
-        <div className="absolute bottom-6 left-6 right-6 md:left-auto md:w-80 z-10">
+        <div className="absolute bottom-4 sm:bottom-6 left-4 right-4 sm:left-6 sm:right-6 md:left-auto md:w-80 z-10">
           <a 
             href="/" 
-            className="block w-full bg-amber-400 text-gray-900 text-center font-bold py-4 px-6 rounded-2xl hover:bg-amber-300 transition-transform hover:scale-105 shadow-[0_10px_25px_rgba(245,158,11,0.4)]"
+            className="block w-full bg-amber-400 text-gray-900 text-center font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl hover:bg-amber-300 transition-transform hover:scale-105 shadow-[0_10px_25px_rgba(245,158,11,0.4)] text-sm sm:text-base"
           >
             Download Stoutly
           </a>
