@@ -79,7 +79,60 @@ const getAvatarUrl = (avatarId: string | null, username: string) => {
     // Ignore JSON parse errors, fallback to returning the string directly
   }
   
-  return avatarId;
+  if (avatarId.startsWith('http')) {
+    return avatarId;
+  }
+
+  const { data } = supabase.storage.from('avatars').getPublicUrl(avatarId);
+  return data.publicUrl;
+};
+
+const AvatarImage = ({ avatarId, username, className }: { avatarId: string | null, username: string, className: string }) => {
+  const [urlsToTry, setUrlsToTry] = useState<string[]>([]);
+  const [currentUrlIndex, setCurrentUrlIndex] = useState(0);
+
+  React.useEffect(() => {
+    const initialUrl = getAvatarUrl(avatarId, username);
+    if (!initialUrl) {
+      setUrlsToTry([]);
+      return;
+    }
+
+    if (initialUrl.includes('supabase.co/storage/v1/object/public/avatars/')) {
+      const baseUrl = initialUrl.replace(/\.(png|jpeg|jpg|webp|gif)$/i, '');
+      const extensions = ['', '.jpeg', '.jpg', '.png', '.webp', '.gif'];
+      
+      const urls = Array.from(new Set([
+        initialUrl,
+        ...extensions.map(ext => `${baseUrl}${ext}`)
+      ]));
+      
+      setUrlsToTry(urls);
+    } else {
+      setUrlsToTry([initialUrl]);
+    }
+    setCurrentUrlIndex(0);
+  }, [avatarId, username]);
+
+  if (urlsToTry.length === 0 || currentUrlIndex >= urlsToTry.length) {
+    return (
+      <div className={`${className} bg-gray-800 flex items-center justify-center text-amber-400 font-bold`}>
+        {username.charAt(0).toUpperCase()}
+      </div>
+    );
+  }
+
+  return (
+    <img 
+      src={urlsToTry[currentUrlIndex]} 
+      alt={username} 
+      className={className} 
+      referrerPolicy="no-referrer" 
+      onError={() => {
+        setCurrentUrlIndex(prev => prev + 1);
+      }}
+    />
+  );
 };
 
 const PubIcon = ({ color = "#F59E0B" }: { color?: string }) => (
@@ -138,6 +191,7 @@ export const PublicMap: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sortBy, setSortBy] = useState<'recent' | 'highest' | 'lowest' | 'name'>('recent');
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [fullSizeImage, setFullSizeImage] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const [viewState, setViewState] = useState({
     longitude: -6.2603,
@@ -326,18 +380,11 @@ export const PublicMap: React.FC = () => {
   const renderUserCardAndToggle = () => (
     <div className="flex flex-col items-center sm:items-end gap-3 pointer-events-auto">
       <div className="bg-gray-900/80 backdrop-blur-md p-1.5 pr-3 sm:p-4 rounded-full sm:rounded-2xl border border-gray-700 flex items-center gap-2 sm:gap-3 shadow-lg max-w-[280px] sm:max-w-sm">
-        {getAvatarUrl(profile?.avatar_id, profile?.username) ? (
-          <img 
-            src={getAvatarUrl(profile!.avatar_id, profile!.username)!} 
-            alt={profile?.username} 
-            className="w-8 h-8 sm:w-12 sm:h-12 rounded-full object-cover border border-amber-400/50" 
-            referrerPolicy="no-referrer" 
-          />
-        ) : (
-          <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-800 rounded-full flex items-center justify-center text-amber-400 font-bold text-sm sm:text-xl border border-amber-400/50">
-            {profile?.username.charAt(0).toUpperCase()}
-          </div>
-        )}
+        <AvatarImage 
+          avatarId={profile?.avatar_id || null} 
+          username={profile?.username || ''} 
+          className="w-8 h-8 sm:w-12 sm:h-12 rounded-full object-cover border border-amber-400/50" 
+        />
         <div className="flex flex-col justify-center">
           <div className="flex items-center gap-1 sm:gap-1.5">
             <span className="text-white font-semibold text-xs sm:text-base truncate max-w-[120px] sm:max-w-[160px] leading-none">@{profile?.username}</span>
@@ -712,7 +759,10 @@ export const PublicMap: React.FC = () => {
               
               {/* Photo */}
               {selectedRating.image_url && (
-                <div className="w-full h-32 sm:h-48 rounded-xl overflow-hidden mb-4 bg-gray-800 flex items-center justify-center">
+                <div 
+                  className="w-full h-32 sm:h-48 rounded-xl overflow-hidden mb-4 bg-gray-800 flex items-center justify-center cursor-pointer"
+                  onClick={() => setFullSizeImage(selectedRating.image_url)}
+                >
                   <img 
                     src={selectedRating.image_url} 
                     alt={`Pint at ${selectedRating.pubs.name}`} 
@@ -755,6 +805,28 @@ export const PublicMap: React.FC = () => {
           >
             Download Stoutly
           </a>
+        </div>
+      )}
+
+      {/* Full Size Image Overlay */}
+      {fullSizeImage && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setFullSizeImage(null)}
+        >
+          <button 
+            className="absolute top-4 right-4 text-white hover:text-gray-300 bg-black/50 rounded-full p-2 transition-colors"
+            onClick={(e) => { e.stopPropagation(); setFullSizeImage(null); }}
+          >
+            <X size={24} />
+          </button>
+          <img 
+            src={fullSizeImage} 
+            alt="Full size" 
+            className="max-w-full max-h-full object-contain rounded-lg"
+            referrerPolicy="no-referrer"
+            onClick={(e) => e.stopPropagation()}
+          />
         </div>
       )}
     </div>
