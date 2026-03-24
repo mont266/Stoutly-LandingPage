@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Map, { Marker, NavigationControl, MapRef } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { supabase } from '../lib/supabase';
-import { X, Star, Map as MapIcon, List as ListIcon, ChevronLeft, Menu, ArrowUpDown } from 'lucide-react';
+import { X, Star, Map as MapIcon, List as ListIcon, ChevronLeft, Menu, ArrowUpDown, ArrowUp } from 'lucide-react';
 import { Logo } from './Logo';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || '';
@@ -137,6 +137,8 @@ export const PublicMap: React.FC = () => {
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sortBy, setSortBy] = useState<'recent' | 'highest' | 'lowest' | 'name'>('recent');
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const listRef = useRef<HTMLDivElement>(null);
   const [viewState, setViewState] = useState({
     longitude: -6.2603,
     latitude: 53.3498,
@@ -309,6 +311,70 @@ export const PublicMap: React.FC = () => {
     });
   }, [ratings, sortBy]);
 
+  const handleScroll = () => {
+    if (listRef.current) {
+      setShowScrollTop(listRef.current.scrollTop > 300);
+    }
+  };
+
+  const scrollToTop = () => {
+    if (listRef.current) {
+      listRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const renderUserCardAndToggle = () => (
+    <div className="flex flex-col items-center sm:items-end gap-3 pointer-events-auto">
+      <div className="bg-gray-900/80 backdrop-blur-md p-1.5 pr-3 sm:p-4 rounded-full sm:rounded-2xl border border-gray-700 flex items-center gap-2 sm:gap-3 shadow-lg max-w-[280px] sm:max-w-sm">
+        {getAvatarUrl(profile?.avatar_id, profile?.username) ? (
+          <img 
+            src={getAvatarUrl(profile!.avatar_id, profile!.username)!} 
+            alt={profile?.username} 
+            className="w-8 h-8 sm:w-12 sm:h-12 rounded-full object-cover border border-amber-400/50" 
+            referrerPolicy="no-referrer" 
+          />
+        ) : (
+          <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-800 rounded-full flex items-center justify-center text-amber-400 font-bold text-sm sm:text-xl border border-amber-400/50">
+            {profile?.username.charAt(0).toUpperCase()}
+          </div>
+        )}
+        <div className="flex flex-col justify-center">
+          <div className="flex items-center gap-1 sm:gap-1.5">
+            <span className="text-white font-semibold text-xs sm:text-base truncate max-w-[120px] sm:max-w-[160px] leading-none">@{profile?.username}</span>
+            {profile?.is_stoutly_legend && <span title="Stoutly Legend" className="text-[10px] sm:text-sm leading-none">👑</span>}
+            {profile?.is_developer && <span title="Developer" className="text-[10px] sm:text-sm leading-none">💻</span>}
+            {profile?.is_beta_tester && <span title="Beta Tester" className="text-[10px] sm:text-sm leading-none">🧪</span>}
+            {profile?.is_early_bird && <span title="Early Bird" className="text-[10px] sm:text-sm leading-none">🐦</span>}
+          </div>
+          <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-gray-400 mt-0.5 leading-none">
+            <span className="flex items-center gap-0.5 font-medium text-amber-400">
+              <Star size={10} className="fill-amber-400 sm:w-3 sm:h-3" /> 
+              {ratings.length || 0}
+            </span>
+            <span>•</span>
+            <span>Lvl {profile?.level || 1}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* View Toggle */}
+      <div className="flex md:hidden bg-gray-900/80 backdrop-blur-md p-1 rounded-full border border-gray-700 shadow-lg">
+        <button
+          onClick={() => setViewMode('map')}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors ${viewMode === 'map' ? 'bg-amber-400 text-gray-900' : 'text-gray-400 hover:text-white'}`}
+        >
+          <MapIcon size={14} className="sm:w-4 sm:h-4" /> <span>Map</span>
+        </button>
+        <button
+          onClick={() => setViewMode('list')}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors ${viewMode === 'list' ? 'bg-amber-400 text-gray-900' : 'text-gray-400 hover:text-white'}`}
+        >
+          <ListIcon size={14} className="sm:w-4 sm:h-4" /> <span>List</span>
+        </button>
+      </div>
+    </div>
+  );
+
   if (loading) {
     return (
       <div className="min-h-[100dvh] bg-gray-900 flex items-center justify-center">
@@ -352,7 +418,7 @@ export const PublicMap: React.FC = () => {
         }
       `}</style>
       {/* Map Header */}
-      <div className="absolute top-0 left-0 right-0 z-20 pointer-events-none flex flex-col">
+      <div className="fixed top-0 left-0 right-0 z-20 pointer-events-none flex flex-col">
         {/* See-through Header (Mobile Only) */}
         <div className="sm:hidden w-full bg-gray-900/40 backdrop-blur-md border-b border-gray-800/50 p-2.5 flex justify-center items-center pointer-events-auto">
           <a href="/" className="flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity">
@@ -362,7 +428,7 @@ export const PublicMap: React.FC = () => {
         </div>
 
         {/* Gradient Background for User Stats */}
-        <div className="bg-gradient-to-b from-gray-900/80 via-gray-900/40 to-transparent p-3 sm:p-4 md:p-6 w-full">
+        <div className={`bg-gradient-to-b from-gray-900/80 via-gray-900/40 to-transparent p-3 sm:p-4 md:p-6 w-full ${viewMode === 'list' ? 'hidden md:block' : 'block'}`}>
           <div className="w-full px-2 sm:px-4 flex justify-center sm:justify-between items-start">
             {/* Desktop Logo & Toggle */}
             <div className="hidden sm:flex items-center gap-4 pointer-events-auto">
@@ -379,55 +445,12 @@ export const PublicMap: React.FC = () => {
               </a>
             </div>
             
-            {/* User Stats Card and Toggle */}
-            <div className="flex flex-col items-center sm:items-end gap-3 pointer-events-auto">
-              <div className="bg-gray-900/80 backdrop-blur-md p-1.5 pr-3 sm:p-4 rounded-full sm:rounded-2xl border border-gray-700 flex items-center gap-2 sm:gap-3 shadow-lg max-w-[280px] sm:max-w-sm">
-                {getAvatarUrl(profile.avatar_id, profile.username) ? (
-                  <img 
-                    src={getAvatarUrl(profile.avatar_id, profile.username)!} 
-                    alt={profile.username} 
-                    className="w-8 h-8 sm:w-12 sm:h-12 rounded-full object-cover border border-amber-400/50" 
-                    referrerPolicy="no-referrer" 
-                  />
-                ) : (
-                  <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gray-800 rounded-full flex items-center justify-center text-amber-400 font-bold text-sm sm:text-xl border border-amber-400/50">
-                    {profile.username.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <div className="flex flex-col justify-center">
-                  <div className="flex items-center gap-1 sm:gap-1.5">
-                    <span className="text-white font-semibold text-xs sm:text-base truncate max-w-[120px] sm:max-w-[160px] leading-none">@{profile.username}</span>
-                    {profile.is_stoutly_legend && <span title="Stoutly Legend" className="text-[10px] sm:text-sm leading-none">👑</span>}
-                    {profile.is_developer && <span title="Developer" className="text-[10px] sm:text-sm leading-none">💻</span>}
-                    {profile.is_beta_tester && <span title="Beta Tester" className="text-[10px] sm:text-sm leading-none">🧪</span>}
-                    {profile.is_early_bird && <span title="Early Bird" className="text-[10px] sm:text-sm leading-none">🐦</span>}
-                  </div>
-                  <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-gray-400 mt-0.5 leading-none">
-                    <span className="flex items-center gap-0.5 font-medium text-amber-400">
-                      <Star size={10} className="fill-amber-400 sm:w-3 sm:h-3" /> 
-                      {ratings.length || 0}
-                    </span>
-                    <span>•</span>
-                    <span>Lvl {profile.level || 1}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* View Toggle */}
-              <div className="flex md:hidden bg-gray-900/80 backdrop-blur-md p-1 rounded-full border border-gray-700 shadow-lg">
-                <button
-                  onClick={() => setViewMode('map')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors ${viewMode === 'map' ? 'bg-amber-400 text-gray-900' : 'text-gray-400 hover:text-white'}`}
-                >
-                  <MapIcon size={14} className="sm:w-4 sm:h-4" /> <span>Map</span>
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-colors ${viewMode === 'list' ? 'bg-amber-400 text-gray-900' : 'text-gray-400 hover:text-white'}`}
-                >
-                  <ListIcon size={14} className="sm:w-4 sm:h-4" /> <span>List</span>
-                </button>
-              </div>
+            {/* User Stats Card and Toggle (Hidden on mobile list view) */}
+            <div className="hidden md:flex flex-col items-center sm:items-end gap-3 pointer-events-auto">
+              {renderUserCardAndToggle()}
+            </div>
+            <div className="md:hidden flex flex-col items-center sm:items-end gap-3 pointer-events-auto">
+              {renderUserCardAndToggle()}
             </div>
           </div>
         </div>
@@ -436,13 +459,24 @@ export const PublicMap: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex w-full relative overflow-hidden">
         {/* List View Container (Sidebar on Desktop) */}
-        <div className={`
+        <div 
+          ref={listRef}
+          onScroll={handleScroll}
+          className={`
           ${viewMode === 'map' ? 'hidden md:flex' : 'flex'} 
           absolute inset-0 md:relative flex-col bg-gray-900 md:border-r border-gray-800 z-10
-          pt-[160px] sm:pt-[140px] md:pt-[120px] pb-32 md:pb-0 overflow-y-auto transition-all duration-300 ease-in-out
+          ${viewMode === 'list' ? 'pt-[60px] md:pt-[120px]' : 'pt-[160px] sm:pt-[140px] md:pt-[120px]'} 
+          pb-32 md:pb-0 overflow-y-auto transition-all duration-300 ease-in-out
           w-full md:w-[350px] lg:w-[400px] flex-shrink-0
           ${!isSidebarOpen ? 'md:-ml-[350px] lg:-ml-[400px]' : 'md:ml-0'}
         `}>
+          {/* Mobile User Stats & Toggle (Scrolls with list) */}
+          {viewMode === 'list' && (
+            <div className="md:hidden px-4 pt-4 pb-2 flex flex-col items-center gap-3">
+              {renderUserCardAndToggle()}
+            </div>
+          )}
+
           <div className="flex flex-col gap-4 px-4 sm:px-6 md:px-4 pb-6">
             {/* Sort Controls */}
             <div className="flex items-center justify-between bg-gray-800/50 p-2 rounded-xl border border-gray-700">
@@ -508,6 +542,17 @@ export const PublicMap: React.FC = () => {
               </div>
             )}
           </div>
+          
+          {/* Scroll to Top Button */}
+          {showScrollTop && (
+            <button
+              onClick={scrollToTop}
+              className="fixed bottom-24 right-6 md:absolute md:bottom-6 md:right-6 z-50 p-3 bg-amber-400 hover:bg-amber-300 text-gray-900 rounded-full shadow-lg transition-all animate-in fade-in slide-in-from-bottom-4"
+              aria-label="Scroll to top"
+            >
+              <ArrowUp size={20} />
+            </button>
+          )}
         </div>
 
         {/* Map Container */}
