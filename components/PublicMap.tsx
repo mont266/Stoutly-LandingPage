@@ -138,8 +138,8 @@ export const PublicMap: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [sortBy, setSortBy] = useState<'recent' | 'highest' | 'lowest' | 'name'>('recent');
   const [viewState, setViewState] = useState({
-    longitude: -0.1276,
-    latitude: 51.5074,
+    longitude: -6.2603,
+    latitude: 53.3498,
     zoom: 11
   });
 
