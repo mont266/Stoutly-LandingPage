@@ -8,6 +8,7 @@ const logos = [
   { src: '/feature-logos/logo5.png', alt: 'Coleraine Times' },
   { src: '/feature-logos/logo6.png', alt: 'LovinIreland' },
   { src: '/feature-logos/logo7.png', alt: 'Northern Ireland World' },
+  { src: '/feature-logos/logo8.png', alt: 'Belfast Telegraph'},
 ];
 
 export const FeaturedIn: React.FC = () => {
