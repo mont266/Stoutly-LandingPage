@@ -8,6 +8,7 @@ import { DownloadSection } from './components/DownloadSection';
 import { Footer } from './components/Footer';
 import { PressKit } from './components/PressKit';
 import { PublicMap } from './components/PublicMap';
+import { SponsorRedirect } from './components/SponsorRedirect';
 
 const Home = () => (
   <>
@@ -30,6 +31,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/press" element={<><Navbar /><main><PressKit /></main><Footer /></>} />
           <Route path="/map/:username" element={<PublicMap />} />
+          <Route path="/c/:creatorName" element={<SponsorRedirect />} />
         </Routes>
       </div>
     </Router>
