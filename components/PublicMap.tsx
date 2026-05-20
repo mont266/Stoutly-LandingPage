@@ -348,6 +348,36 @@ export const PublicMap: React.FC = () => {
     }
   }, [profile]);
 
+  // Track map views
+  useEffect(() => {
+    const trackView = async () => {
+      if (!profile?.id) return;
+
+      // Get or create visitor ID
+      let visitorId = localStorage.getItem('stoutly_visitor_id');
+      if (!visitorId) {
+        visitorId = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2) + Date.now().toString(36);
+        localStorage.setItem('stoutly_visitor_id', visitorId);
+      }
+
+      // Track using sessionStorage to avoid multiple counts in one active session
+      const sessionKey = `stoutly_viewed_map_${profile.id}`;
+      if (!sessionStorage.getItem(sessionKey)) {
+        try {
+          await supabase.from('public_map_views').insert({
+            profile_id: profile.id,
+            visitor_id: visitorId
+          });
+          sessionStorage.setItem(sessionKey, 'true');
+        } catch (err) {
+          console.error("Failed to track map view", err);
+        }
+      }
+    };
+
+    trackView();
+  }, [profile?.id]);
+
   const sortedRatings = React.useMemo(() => {
     return [...ratings].sort((a, b) => {
       switch (sortBy) {
