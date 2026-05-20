@@ -364,13 +364,18 @@ export const PublicMap: React.FC = () => {
       const sessionKey = `stoutly_viewed_map_${profile.id}`;
       if (!sessionStorage.getItem(sessionKey)) {
         try {
-          await supabase.from('public_map_views').insert({
+          const { error } = await supabase.from('public_map_views').insert({
             profile_id: profile.id,
             visitor_id: visitorId
           });
-          sessionStorage.setItem(sessionKey, 'true');
+          
+          if (error) {
+            console.error("Failed to track map view in Supabase:", error);
+          } else {
+            sessionStorage.setItem(sessionKey, 'true');
+          }
         } catch (err) {
-          console.error("Failed to track map view", err);
+          console.error("Failed to track map view locally", err);
         }
       }
     };
