@@ -128,10 +128,12 @@ export const StoutlyReport: React.FC = () => {
   const renderDiff = (current: number, comp: number, isPrice: boolean, currCurrency: string, compCurrency: string, isInfographic: boolean = false) => {
     let diff = current - comp;
     if (isPrice && currCurrency !== compCurrency) {
+      // Currency conversion locked as of 23rd July 2026 to prevent fluctuation
+      const GBP_TO_EUR_RATE = 1.189;
       const compInCurr = compCurrency === '€' && currCurrency === '£' 
-        ? comp / 1.18 
+        ? comp / GBP_TO_EUR_RATE 
         : compCurrency === '£' && currCurrency === '€' 
-          ? comp * 1.18 
+          ? comp * GBP_TO_EUR_RATE 
           : comp;
       diff = current - compInCurr;
     }
@@ -524,8 +526,8 @@ export const StoutlyReport: React.FC = () => {
       
       {/* Infographic Overlay */}
       {showInfographic && currentData && (
-        <div className="fixed inset-0 z-[100] bg-gray-950/95 backdrop-blur-md overflow-y-auto">
-          <div className="min-h-full flex flex-col items-center justify-center p-4 py-12">
+        <div className="fixed inset-0 z-[100] bg-gray-950/95 backdrop-blur-md overflow-y-auto overflow-x-hidden">
+          <div className="min-h-full w-full flex flex-col items-center justify-center p-4 py-12">
             {/* Action Bar */}
             <div className="fixed top-4 right-4 flex gap-4 z-[110]">
                <button onClick={() => setShowInfographic(false)} className="bg-gray-800 text-white p-3 rounded-full hover:bg-gray-700 transition-colors shadow-lg">
@@ -533,7 +535,10 @@ export const StoutlyReport: React.FC = () => {
                </button>
             </div>
             
-            <div className="flex items-center gap-2 sm:gap-4 w-full justify-center">
+            <div 
+              className="flex items-center gap-2 sm:gap-4 w-full justify-center mt-8 sm:mt-0"
+              style={{ transform: 'scale(min(1, calc(100vw / 600)))', transformOrigin: 'top center' }}
+            >
             <button 
               onClick={() => setInfographicPage(1)}
               className={`p-2 sm:p-3 rounded-full transition-all flex-shrink-0 ${infographicPage === 1 ? 'bg-amber-500/10 text-amber-500/30 cursor-not-allowed' : 'bg-gray-800 text-white hover:bg-gray-700 shadow-lg'}`}
@@ -543,7 +548,7 @@ export const StoutlyReport: React.FC = () => {
             </button>
 
             {/* Infographic Target Area */}
-            <div className="bg-gray-900 border border-gray-700 p-6 sm:p-8 rounded-[2rem] shadow-2xl w-full max-w-lg min-h-[680px] flex flex-col relative overflow-hidden ring-1 ring-white/10">
+            <div className="bg-gray-900 border border-gray-700 p-6 sm:p-8 rounded-[2rem] shadow-2xl w-[480px] shrink-0 min-h-[680px] flex flex-col relative overflow-hidden ring-1 ring-white/10">
                 {/* background accents */}
                 <div className="absolute top-0 right-0 w-72 h-72 bg-amber-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
                 <div className="absolute bottom-0 left-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
