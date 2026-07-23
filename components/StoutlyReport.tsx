@@ -526,18 +526,17 @@ export const StoutlyReport: React.FC = () => {
       
       {/* Infographic Overlay */}
       {showInfographic && currentData && (
-        <div className="fixed inset-0 z-[100] bg-gray-950/95 backdrop-blur-md overflow-y-auto overflow-x-hidden">
-          <div className="min-h-full w-full flex flex-col items-center justify-center p-4 py-12">
+        <div className="fixed inset-0 z-[100] bg-gray-950/95 backdrop-blur-md overflow-hidden flex flex-col items-center justify-center">
             {/* Action Bar */}
-            <div className="fixed top-4 right-4 flex gap-4 z-[110]">
+            <div className="absolute top-4 right-4 flex gap-4 z-[110]">
                <button onClick={() => setShowInfographic(false)} className="bg-gray-800 text-white p-3 rounded-full hover:bg-gray-700 transition-colors shadow-lg">
                  <X size={24} />
                </button>
             </div>
             
             <div 
-              className="flex items-center gap-2 sm:gap-4 w-full justify-center mt-8 sm:mt-0"
-              style={{ transform: 'scale(min(1, calc(100vw / 600)))', transformOrigin: 'top center' }}
+              className="flex items-center gap-2 sm:gap-4 w-full justify-center"
+              style={{ transform: 'scale(min(1, calc(100vw / 620), calc(100vh / 800)))', transformOrigin: 'center' }}
             >
             <button 
               onClick={() => setInfographicPage(1)}
@@ -799,12 +798,11 @@ export const StoutlyReport: React.FC = () => {
             </button>
           </div>
           
-          <div className="mt-8 bg-gray-800 text-gray-300 px-6 py-3 rounded-full text-sm animate-pulse shadow-lg border border-gray-700 flex items-center gap-3">
+          <div className="absolute bottom-6 bg-gray-800 text-gray-300 px-6 py-3 rounded-full text-sm animate-pulse shadow-lg border border-gray-700 flex items-center gap-3 z-[110]">
              <Camera size={18} />
              Take a screenshot to share page {infographicPage}!
           </div>
         </div>
-      </div>
       )}
     </>
   );
