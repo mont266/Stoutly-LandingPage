@@ -50,12 +50,15 @@ export const Navbar: React.FC = () => {
           element.scrollIntoView({ behavior: 'smooth' });
         }
       }
+    } else {
+      navigate(href);
     }
     setIsMobileMenuOpen(false);
   };
 
   const navLinks = [
     { label: 'Features', href: '#features' },
+    { label: 'Report', href: '/report' },
     { label: 'Download', href: '#download' },
   ];
 

@@ -9,6 +9,8 @@ import { Footer } from './components/Footer';
 import { PressKit } from './components/PressKit';
 import { PublicMap } from './components/PublicMap';
 import { SponsorRedirect } from './components/SponsorRedirect';
+import { StoutlyScape } from './components/StoutlyScape';
+import { StoutlyReport } from './components/StoutlyReport';
 
 const Home = () => (
   <>
@@ -32,6 +34,8 @@ function App() {
           <Route path="/press" element={<><Navbar /><main><PressKit /></main><Footer /></>} />
           <Route path="/map/:username" element={<PublicMap />} />
           <Route path="/c/:creatorName" element={<SponsorRedirect />} />
+          <Route path="/stoutlyscape" element={<StoutlyScape />} />
+          <Route path="/report" element={<StoutlyReport />} />
         </Routes>
       </div>
     </Router>
