@@ -629,7 +629,7 @@ export const StoutlyReport: React.FC = () => {
                          <div className="text-gray-400 text-[10px] uppercase tracking-widest font-bold">Average Pub Score</div>
                        </div>
                        <div className="text-[8px] text-gray-500 mt-1 max-w-[160px] leading-tight text-center px-2">
-                         Quality + Price × Confidence
+                         (Quality + Price) × Confidence Rating
                        </div>
                        
                        {/* Worldwide Comparison */}
