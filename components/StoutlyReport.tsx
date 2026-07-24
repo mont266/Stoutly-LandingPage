@@ -277,7 +277,7 @@ export const StoutlyReport: React.FC = () => {
                  <div className="flex items-center gap-4">
                    <button 
                      onClick={() => setShowInfographic(true)}
-                     className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 rounded-lg transition-colors border border-amber-500/20 font-medium text-sm"
+                     className="hidden md:flex items-center gap-2 px-4 py-2 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 rounded-lg transition-colors border border-amber-500/20 font-medium text-sm"
                    >
                      <Camera size={16} />
                      Share Infographic
@@ -329,7 +329,7 @@ export const StoutlyReport: React.FC = () => {
                        <TrendingUp className="text-amber-400" size={24} /> 
                        Price Trends (12 Months)
                      </h3>
-                     <p className="text-gray-400 text-sm">Showing the average pint prices currently being paid by users in this region.</p>
+                     <p className="text-gray-400 text-sm">Showing the average pint prices currently being paid by users in this region.<span className="block mt-1 text-xs text-gray-500 italic">Note: This isn&apos;t the same as &quot;12-month price change&quot; which shows the average percentage pubs have increased/decreased their prices in the last 12 months.</span></p>
                    </div>
                    <div className="h-72 w-full">
                      <ResponsiveContainer width="100%" height="100%">
@@ -535,11 +535,11 @@ export const StoutlyReport: React.FC = () => {
             </div>
             
             <div 
-              className="flex items-center gap-2 sm:gap-4 w-full justify-center"
-              style={{ transform: 'scale(min(1, calc(100vw / 620), calc(100vh / 800)))', transformOrigin: 'center' }}
+              className="flex items-center gap-2 sm:gap-4 w-[640px] shrink-0 justify-center"
+              style={{ transform: 'scale(min(1, calc(100vw / 640), calc(100vh / 850)))', transformOrigin: 'center' }}
             >
             <button 
-              onClick={() => setInfographicPage(1)}
+              onClick={() => setInfographicPage((prev) => Math.max(1, prev - 1) as 1 | 2)}
               className={`p-2 sm:p-3 rounded-full transition-all flex-shrink-0 ${infographicPage === 1 ? 'bg-amber-500/10 text-amber-500/30 cursor-not-allowed' : 'bg-gray-800 text-white hover:bg-gray-700 shadow-lg'}`}
               disabled={infographicPage === 1}
             >
@@ -742,7 +742,7 @@ export const StoutlyReport: React.FC = () => {
                     <div className="text-gray-400 text-[8px] uppercase tracking-wider font-semibold mb-2 text-center">Compared to</div>
                     <div className="flex justify-center gap-3 flex-wrap">
                       {comparisons.map((comp) => (
-                        <div key={comp.label} className="bg-gray-800/80 rounded-lg p-2 border border-gray-700 text-center flex-1 min-w-[120px]">
+                        <div key={comp.label} className={`bg-gray-800/80 rounded-lg p-2 border border-gray-700 text-center min-w-[120px] ${comparisons.length === 1 ? 'w-full max-w-[200px]' : 'flex-1'}`}>
                            <div className="text-white font-bold text-[9px] mb-1.5">{comp.label}</div>
                            <div className="flex flex-col gap-1">
                              <div className="flex justify-between items-center text-[8px]">
@@ -790,7 +790,7 @@ export const StoutlyReport: React.FC = () => {
             </div>
 
             <button 
-              onClick={() => setInfographicPage(2)}
+              onClick={() => setInfographicPage((prev) => Math.min(2, prev + 1) as 1 | 2)}
               className={`p-2 sm:p-3 rounded-full transition-all flex-shrink-0 ${infographicPage === 2 ? 'bg-amber-500/10 text-amber-500/30 cursor-not-allowed' : 'bg-gray-800 text-white hover:bg-gray-700 shadow-lg'}`}
               disabled={infographicPage === 2}
             >
@@ -798,10 +798,6 @@ export const StoutlyReport: React.FC = () => {
             </button>
           </div>
           
-          <div className="absolute bottom-6 bg-gray-800 text-gray-300 px-6 py-3 rounded-full text-sm animate-pulse shadow-lg border border-gray-700 flex items-center gap-3 z-[110]">
-             <Camera size={18} />
-             Take a screenshot to share page {infographicPage}!
-          </div>
         </div>
       )}
     </>
