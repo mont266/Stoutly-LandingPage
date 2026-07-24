@@ -850,7 +850,7 @@ export const StoutlyReport: React.FC = () => {
                 {/* Footer */}
                 <div className="mt-8 text-center relative z-10">
                   <div className="flex items-center justify-center gap-2 mb-2 text-amber-500/80 font-bold tracking-wider text-sm">
-                    STOUTLY.CO.UK
+                    stoutly.co.uk/report
                   </div>
                   <div className="text-gray-500 text-[9px] uppercase tracking-widest opacity-60">
                      Data powered by the community
