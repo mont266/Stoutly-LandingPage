@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
-import { BarChart3, Map, Calendar, Beer, TrendingUp, PoundSterling, Euro, Trophy, ArrowDownToLine, ArrowUpFromLine, CreditCard, Activity, Camera, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { BarChart3, Map, Calendar, Beer, TrendingUp, TrendingDown, PoundSterling, Euro, Trophy, ArrowDownToLine, ArrowUpFromLine, CreditCard, Activity, Camera, X, ChevronLeft, ChevronRight, Info, Tag, Shield } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { belfastData, niData, londonData, dublinData, ukData, roiData, derryData } from '../data/reportData';
 import { Logo } from './Logo';
@@ -67,6 +67,54 @@ const ScoreMeter = ({ score, size = 100, strokeWidth = 8 }: { score: number, siz
   );
 };
 
+const PubScoreModal = ({ onClose }: { onClose: () => void }) => (
+  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+    <div className="bg-[#1e2330] rounded-xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative border border-gray-700">
+      <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+        <X size={24} />
+      </button>
+      <h3 className="text-2xl font-bold text-white mb-4 text-center">What is Pub Score?</h3>
+      <p className="text-gray-400 text-sm mb-6 text-center">
+        The Pub Score is a single, reliable metric out of 100 that helps you judge a pub&apos;s overall quality at a glance. It&apos;s calculated by combining three key factors:
+      </p>
+
+      <div className="space-y-4">
+        <div className="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 flex gap-4">
+          <div className="text-amber-500 mt-1"><Beer size={24} /></div>
+          <div>
+            <h4 className="text-white font-bold text-sm mb-1">Pint Quality (70% weight)</h4>
+            <p className="text-gray-400 text-xs leading-relaxed">The average of all user quality ratings. A great-tasting pint is the most important factor.</p>
+          </div>
+        </div>
+        
+        <div className="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 flex gap-4">
+          <div className="text-emerald-500 mt-1"><Tag size={24} /></div>
+          <div>
+            <h4 className="text-white font-bold text-sm mb-1">Pint Price (30% weight)</h4>
+            <p className="text-gray-400 text-xs leading-relaxed">The average of all user price ratings. A cheaper pint means a better value score.</p>
+          </div>
+        </div>
+
+        <div className="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 flex gap-4">
+          <div className="text-blue-500 mt-1"><Shield size={24} /></div>
+          <div>
+            <h4 className="text-white font-bold text-sm mb-1">Confidence (Multiplier)</h4>
+            <p className="text-gray-400 text-xs leading-relaxed">This rewards pubs with more ratings. A pub with 50 great ratings is a more reliable choice than one with a single perfect rating.</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 bg-gray-900 rounded-lg p-3 text-center border border-gray-800">
+        <code className="text-gray-300 text-xs sm:text-sm font-mono">(Quality + Price) × Confidence = Pub Score</code>
+      </div>
+
+      <button onClick={onClose} className="w-full mt-6 bg-amber-500 hover:bg-amber-400 text-gray-900 font-bold py-3 rounded-lg transition-colors">
+        Got it!
+      </button>
+    </div>
+  </div>
+);
+
 export const StoutlyReport: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -79,6 +127,7 @@ export const StoutlyReport: React.FC = () => {
   const [selectedCity, setSelectedCity] = useState<string | null>(initialCity);
   const [showInfographic, setShowInfographic] = useState(false);
   const [infographicPage, setInfographicPage] = useState<1 | 2>(1);
+  const [showScoreModal, setShowScoreModal] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -316,7 +365,16 @@ export const StoutlyReport: React.FC = () => {
                 </div>
                 <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 flex flex-col items-center text-center hover:border-amber-400/50 transition-colors">
                   <ScoreMeter score={currentData.stats.avgScore} size={100} strokeWidth={10} />
-                  <div className="text-gray-400 text-sm">Average Score</div>
+                  <div className="flex items-center gap-1.5 text-gray-400 text-sm mb-2">
+                    Average Score
+                    <button onClick={() => setShowScoreModal(true)} className="hover:text-amber-400 transition-colors" title="What is Pub Score?">
+                      <Info size={14} />
+                    </button>
+                  </div>
+                  <div className={`text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1 ${currentData.stats.avgScore >= 39.7 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
+                    {currentData.stats.avgScore >= 39.7 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                    {Math.abs(currentData.stats.avgScore - 40).toFixed(1)} {currentData.stats.avgScore >= 40 ? 'above' : 'below'} global average
+                  </div>
                 </div>
               </div>
 
@@ -565,9 +623,20 @@ export const StoutlyReport: React.FC = () => {
                   /* Core Stats Grid */
                   <div className="grid grid-cols-4 gap-3 flex-1 relative z-10">
                      {/* Avg Score Hero */}
-                     <div className="bg-gray-800/80 rounded-3xl p-4 border border-gray-700 flex flex-col justify-center items-center text-center col-span-2 shadow-lg">
+                     <div className="bg-gray-800/80 rounded-3xl p-4 border border-gray-700 flex flex-col justify-center items-center text-center col-span-2 shadow-lg relative">
                        <ScoreMeter score={currentData.stats.avgScore} size={90} strokeWidth={8} />
-                       <div className="text-gray-400 text-[10px] uppercase tracking-widest font-bold mt-2">Average Score</div>
+                       <div className="flex items-center gap-1 mt-2">
+                         <div className="text-gray-400 text-[10px] uppercase tracking-widest font-bold">Average Pub Score</div>
+                       </div>
+                       <div className="text-[8px] text-gray-500 mt-1 max-w-[160px] leading-tight text-center px-2">
+                         Quality + Price × Confidence
+                       </div>
+                       
+                       {/* Worldwide Comparison */}
+                       <div className={`mt-2.5 text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border ${currentData.stats.avgScore >= 39.7 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}`}>
+                         {currentData.stats.avgScore >= 39.7 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                         {Math.abs(currentData.stats.avgScore - 40).toFixed(1)} {currentData.stats.avgScore >= 40 ? 'above' : 'below'} global avg
+                       </div>
                      </div>
     
                      {/* Top Rated */}
@@ -800,6 +869,8 @@ export const StoutlyReport: React.FC = () => {
           
         </div>
       )}
+      
+      {showScoreModal && <PubScoreModal onClose={() => setShowScoreModal(false)} />}
     </>
   );
 };
