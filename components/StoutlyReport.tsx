@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
-import { BarChart3, Map, Calendar, Beer, TrendingUp, TrendingDown, PoundSterling, Euro, Trophy, ArrowDownToLine, ArrowUpFromLine, CreditCard, Activity, Camera, X, ChevronLeft, ChevronRight, Info, Tag, Shield } from 'lucide-react';
+import { BarChart3, Map, Calendar, Beer, TrendingUp, TrendingDown, PoundSterling, Euro, Trophy, ArrowDownToLine, ArrowUpFromLine, CreditCard, Activity, Camera, X, ChevronLeft, ChevronRight, Info, Tag, Shield, Instagram } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { belfastData, niData, londonData, dublinData, ukData, roiData, derryData } from '../data/reportData';
 import { Logo } from './Logo';
@@ -128,6 +128,7 @@ export const StoutlyReport: React.FC = () => {
   const [showInfographic, setShowInfographic] = useState(false);
   const [infographicPage, setInfographicPage] = useState<1 | 2>(1);
   const [showScoreModal, setShowScoreModal] = useState(false);
+  const [isInstagram, setIsInstagram] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -587,6 +588,13 @@ export const StoutlyReport: React.FC = () => {
         <div className="fixed inset-0 z-[100] bg-gray-950/95 backdrop-blur-md overflow-hidden flex flex-col items-center justify-center">
             {/* Action Bar */}
             <div className="absolute top-4 right-4 flex gap-4 z-[110]">
+               <button 
+                 onClick={() => setIsInstagram(!isInstagram)} 
+                 className={`p-3 rounded-full transition-colors shadow-lg ${isInstagram ? 'bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500 text-white' : 'bg-gray-800 text-white hover:bg-gray-700'}`}
+                 title="Instagram Story Format"
+               >
+                 <Instagram size={24} />
+               </button>
                <button onClick={() => setShowInfographic(false)} className="bg-gray-800 text-white p-3 rounded-full hover:bg-gray-700 transition-colors shadow-lg">
                  <X size={24} />
                </button>
@@ -605,42 +613,42 @@ export const StoutlyReport: React.FC = () => {
             </button>
 
             {/* Infographic Target Area */}
-            <div className="bg-gray-900 border border-gray-700 p-6 sm:p-8 rounded-[2rem] shadow-2xl w-[480px] shrink-0 min-h-[680px] flex flex-col relative overflow-hidden ring-1 ring-white/10">
+            <div className={`bg-gray-900 border border-gray-700 ${isInstagram ? 'p-4 sm:p-5' : 'p-6 sm:p-8'} shadow-2xl shrink-0 flex flex-col relative overflow-hidden ring-1 ring-white/10 ${isInstagram ? 'w-[480px] aspect-[4/6] rounded-[2rem]' : 'w-[480px] min-h-[680px] rounded-[2rem]'}`}>
                 {/* background accents */}
                 <div className="absolute top-0 right-0 w-72 h-72 bg-amber-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
                 <div className="absolute bottom-0 left-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
                 
                 {/* Header */}
-                <div className="text-center mb-6 relative z-10 flex flex-col items-center">
-                  <Logo className="w-12 h-12 mb-3" />
-                  <h2 className="text-4xl font-extrabold tracking-tight mb-3 text-white">Stoutly <span className="text-amber-400">Insights</span></h2>
-                  <div className="inline-block bg-gray-800/80 backdrop-blur-md text-amber-400 px-5 py-1.5 rounded-full text-sm font-bold tracking-widest uppercase border border-amber-500/30">
+                <div className={`text-center relative z-10 flex flex-col items-center ${isInstagram ? 'mb-4' : 'mb-6'}`}>
+                  <Logo className={`w-12 h-12 ${isInstagram ? 'mb-1 w-10 h-10' : 'mb-3'}`} />
+                  <h2 className={`font-extrabold tracking-tight text-white ${isInstagram ? 'text-3xl mb-1' : 'text-4xl mb-3'}`}>Stoutly <span className="text-amber-400">Insights</span></h2>
+                  <div className={`inline-block bg-gray-800/80 backdrop-blur-md text-amber-400 rounded-full font-bold tracking-widest uppercase border border-amber-500/30 ${isInstagram ? 'px-3 py-1 text-xs' : 'px-5 py-1.5 text-sm'}`}>
                     {selectedYear} • {getDisplayName(selectedCity || '')}
                   </div>
                 </div>
                 
                 {infographicPage === 1 ? (
                   /* Core Stats Grid */
-                  <div className="grid grid-cols-4 gap-3 flex-1 relative z-10">
+                  <div className={`grid flex-1 relative z-10 ${isInstagram ? 'grid-cols-3 gap-2' : 'grid-cols-4 gap-3'}`}>
                      {/* Avg Score Hero */}
-                     <div className="bg-gray-800/80 rounded-3xl p-4 border border-gray-700 flex flex-col justify-center items-center text-center col-span-2 shadow-lg relative">
-                       <ScoreMeter score={currentData.stats.avgScore} size={90} strokeWidth={8} />
+                     <div className={`bg-gray-800/80 rounded-3xl p-4 border border-gray-700 flex flex-col justify-center items-center text-center shadow-lg relative ${isInstagram ? 'col-span-1' : 'col-span-2'}`}>
+                       <ScoreMeter score={currentData.stats.avgScore} size={isInstagram ? 75 : 90} strokeWidth={isInstagram ? 6 : 8} />
                        <div className="flex items-center gap-1 mt-2">
-                         <div className="text-gray-400 text-[10px] uppercase tracking-widest font-bold">Average Pub Score</div>
+                         <div className={`text-gray-400 uppercase tracking-widest font-bold ${isInstagram ? 'text-[8px]' : 'text-[10px]'}`}>Average Pub Score</div>
                        </div>
-                       <div className="text-[8px] text-gray-500 mt-1 max-w-[160px] leading-tight text-center px-2">
+                       <div className={`text-gray-500 mt-1 max-w-[160px] leading-tight text-center px-1 ${isInstagram ? 'text-[7px]' : 'text-[8px] px-2'}`}>
                          (Quality + Price) × Confidence Rating
                        </div>
                        
                        {/* Worldwide Comparison */}
-                       <div className={`mt-2.5 text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border ${currentData.stats.avgScore >= 39.7 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'}`}>
-                         {currentData.stats.avgScore >= 39.7 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
-                         {Math.abs(currentData.stats.avgScore - 40).toFixed(1)} {currentData.stats.avgScore >= 40 ? 'above' : 'below'} global avg
+                       <div className={`mt-2.5 font-bold px-2 py-0.5 rounded-full flex items-center gap-1 border ${currentData.stats.avgScore >= 39.7 ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border-rose-500/20'} ${isInstagram ? 'text-[7px] flex-col py-1 text-center leading-tight' : 'text-[9px] flex-row'}`}>
+                         {currentData.stats.avgScore >= 39.7 ? <TrendingUp size={10} className="shrink-0" /> : <TrendingDown size={10} className="shrink-0" />}
+                         <span>{Math.abs(currentData.stats.avgScore - 40).toFixed(1)} {currentData.stats.avgScore >= 40 ? 'above' : 'below'} global avg</span>
                        </div>
                      </div>
     
                      {/* Top Rated */}
-                     <div className="bg-gradient-to-br from-amber-500/20 to-gray-800/80 rounded-2xl p-4 border border-amber-500/30 flex flex-col justify-center items-center text-center col-span-2 relative overflow-hidden">
+                     <div className={`bg-gradient-to-br from-amber-500/20 to-gray-800/80 rounded-2xl border border-amber-500/30 flex flex-col justify-center items-center text-center relative overflow-hidden ${isInstagram ? 'col-span-2 p-2' : 'col-span-2 p-4'}`}>
                        <div className="absolute top-0 right-0 p-3 opacity-10">
                          <Trophy size={48} />
                        </div>
@@ -653,7 +661,7 @@ export const StoutlyReport: React.FC = () => {
                            </div>
                            <div className="w-full flex flex-col gap-1.5 z-10">
                              {currentData.stats.top3RatedPubs.slice(0,3).map((pub: typeof belfastData.stats.topRatedPub, i: number) => (
-                               <div key={pub.id} className="flex justify-between items-center bg-gray-900/40 rounded px-2 py-1">
+                               <div key={pub.id} className={`flex justify-between items-center bg-gray-900/40 rounded ${isInstagram ? 'px-2 py-0.5' : 'px-2 py-1'}`}>
                                  <div className="flex items-center gap-1.5 overflow-hidden">
                                    <span className="text-amber-400 font-black text-[10px] opacity-80">{i + 1}</span>
                                    <span className="text-white font-bold text-[10px] truncate max-w-[100px] text-left">{pub.name}</span>
@@ -684,18 +692,18 @@ export const StoutlyReport: React.FC = () => {
                      </div>
     
                      {/* Cheapest and Expensive */}
-                     <div className="bg-emerald-500/10 rounded-xl p-3 border border-emerald-500/30 flex flex-col justify-center items-center text-center col-span-1">
+                     <div className={`bg-emerald-500/10 rounded-xl border border-emerald-500/30 flex flex-col justify-center items-center text-center col-span-1 ${isInstagram ? 'p-2' : 'p-3'}`}>
                        <ArrowDownToLine className="text-emerald-500 mb-1" size={14} />
-                       <div className="text-emerald-500 font-bold text-[10px] leading-tight mb-1 truncate w-full px-1">{currentData.stats.cheapestPub.name}</div>
+                       <div className="text-emerald-500 font-bold text-[10px] leading-[1.1] mb-1 line-clamp-2 w-full px-1">{currentData.stats.cheapestPub.name}</div>
                        <div className="text-emerald-400 font-medium text-xs">
                          {currentData.stats.cheapestPub.minPrice !== null && currentData.stats.cheapestPub.minPrice !== undefined ? `${currentData.stats.currency}${currentData.stats.cheapestPub.minPrice.toFixed(2)}` : 'N/A'}
                        </div>
                        <div className="text-emerald-500/70 text-[7px] uppercase tracking-wider font-semibold mt-1">Cheapest</div>
                      </div>
                      
-                     <div className="bg-rose-500/10 rounded-xl p-3 border border-rose-500/30 flex flex-col justify-center items-center text-center col-span-1">
+                     <div className={`bg-rose-500/10 rounded-xl border border-rose-500/30 flex flex-col justify-center items-center text-center col-span-1 ${isInstagram ? 'p-2' : 'p-3'}`}>
                        <ArrowUpFromLine className="text-rose-500 mb-1" size={14} />
-                       <div className="text-rose-500 font-bold text-[10px] leading-tight mb-1 truncate w-full px-1">{currentData.stats.expensivePub.name}</div>
+                       <div className="text-rose-500 font-bold text-[10px] leading-[1.1] mb-1 line-clamp-2 w-full px-1">{currentData.stats.expensivePub.name}</div>
                        <div className="text-rose-400 font-medium text-xs">
                          {currentData.stats.expensivePub.minPrice !== null && currentData.stats.expensivePub.minPrice !== undefined ? `${currentData.stats.currency}${currentData.stats.expensivePub.minPrice.toFixed(2)}` : 'N/A'}
                        </div>
@@ -703,12 +711,12 @@ export const StoutlyReport: React.FC = () => {
                      </div>
     
                      {/* Price & Trend */}
-                     <div className="bg-gray-800/80 rounded-xl p-3 border border-gray-700 flex flex-col justify-center items-center text-center col-span-1">
+                     <div className={`bg-gray-800/80 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center col-span-1 ${isInstagram ? 'p-2' : 'p-3'}`}>
                        <div className="text-lg font-black text-white mb-1">{currentData.stats.currency}{currentData.stats.avgPrice.toFixed(2)}</div>
                        <div className="text-gray-400 text-[7px] uppercase tracking-wider font-semibold">Avg Price</div>
                      </div>
                      
-                     <div className="bg-gray-800/80 rounded-xl p-3 border border-gray-700 flex flex-col justify-center items-center text-center col-span-1">
+                     <div className={`bg-gray-800/80 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center col-span-1 ${isInstagram ? 'p-2' : 'p-3'}`}>
                        <div className={`text-lg font-black mb-1 ${currentData.stats.avgPriceChange12m > 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
                          {currentData.stats.avgPriceChange12m > 0 ? '+' : '-'}{Math.abs(currentData.stats.avgPriceChange12m).toFixed(2)}%
                        </div>
@@ -718,7 +726,7 @@ export const StoutlyReport: React.FC = () => {
                      </div>
     
                      {/* G0 */}
-                     <div className="bg-blue-900/20 rounded-xl p-3 border border-blue-500/30 flex flex-col justify-center items-center text-center col-span-2 h-full relative overflow-hidden">
+                     <div className={`bg-blue-900/20 rounded-xl border border-blue-500/30 flex flex-col justify-center items-center text-center h-full relative overflow-hidden ${isInstagram ? 'col-span-1 p-2' : 'col-span-2 p-3'}`}>
                        <div className="absolute top-0 right-0 p-3 opacity-10">
                          <Beer size={48} className="text-blue-400" />
                        </div>
@@ -727,7 +735,7 @@ export const StoutlyReport: React.FC = () => {
                      </div>
     
                      {/* Total Pubs & Ratings */}
-                     <div className="bg-gray-800/80 rounded-xl p-3 border border-gray-700 flex flex-col justify-center items-center text-center col-span-2 h-full">
+                     <div className={`bg-gray-800/80 rounded-xl border border-gray-700 flex flex-col justify-center items-center text-center h-full ${isInstagram ? 'col-span-1 p-2' : 'col-span-2 p-3'}`}>
                        <div className="text-xl font-bold text-white mb-1">{currentData.stats.pubCount}</div>
                        <div className="text-gray-400 text-[9px] uppercase tracking-wider font-semibold"># Pubs Tracked</div>
                      </div>
@@ -744,7 +752,7 @@ export const StoutlyReport: React.FC = () => {
                          This chart tracks the average price of pints per user ratings for each month in {getDisplayName(selectedCity || '')}. It reflects the prices users are paying that month, and is not directly reflective of price increases as users could just be visiting more expensive places in a given month.
                        </p>
                        
-                       <div className="w-full h-48 sm:h-64 -ml-4 relative mt-auto">
+                       <div className="w-full flex-1 min-h-[200px] -ml-4 relative mt-auto mb-4">
                          <ResponsiveContainer width="100%" height="100%">
                            <AreaChart data={currentData.stats.trendData}>
                              <defs>
@@ -784,7 +792,7 @@ export const StoutlyReport: React.FC = () => {
                        </div>
                      </div>
                      
-                     <div className="grid grid-cols-2 gap-3 mt-auto">
+                     <div className={`grid mt-auto ${isInstagram ? 'grid-cols-1 gap-2' : 'grid-cols-2 gap-3'}`}>
                        <div className="bg-gray-800/80 rounded-xl p-4 border border-gray-700 text-center flex flex-col justify-center">
                          <div className="text-gray-400 text-[9px] uppercase tracking-wider font-semibold mb-2">
                            Overall Avg Price Change (12m)
@@ -807,7 +815,7 @@ export const StoutlyReport: React.FC = () => {
                 
                 {/* Infographic Comparisons */}
                 {infographicPage === 1 && comparisons.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-gray-800 w-full z-10 relative">
+                  <div className={`border-t border-gray-800 w-full z-10 relative ${isInstagram ? 'mt-1 pt-1' : 'mt-4 pt-4'}`}>
                     <div className="text-gray-400 text-[8px] uppercase tracking-wider font-semibold mb-2 text-center">Compared to</div>
                     <div className="flex justify-center gap-3 flex-wrap">
                       {comparisons.map((comp) => (
@@ -848,11 +856,11 @@ export const StoutlyReport: React.FC = () => {
                 )}
 
                 {/* Footer */}
-                <div className="mt-8 text-center relative z-10">
-                  <div className="flex items-center justify-center gap-2 mb-2 text-amber-500/80 font-bold tracking-wider text-sm">
+                <div className={`text-center relative z-10 ${isInstagram ? 'mt-1.5' : 'mt-8'}`}>
+                  <div className={`flex items-center justify-center gap-2 font-bold tracking-wider text-amber-500/80 ${isInstagram ? 'mb-0 text-[11px]' : 'mb-2 text-sm'}`}>
                     stoutly.co.uk/report
                   </div>
-                  <div className="text-gray-500 text-[9px] uppercase tracking-widest opacity-60">
+                  <div className={`text-gray-500 uppercase tracking-widest opacity-60 ${isInstagram ? 'text-[7px]' : 'text-[9px]'}`}>
                      Data powered by the community
                   </div>
                 </div>
