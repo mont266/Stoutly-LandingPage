@@ -356,7 +356,7 @@ export const niData = {
 
 export const londonData = {
   "region": "London",
-  "generatedAt": "2026-07-23T19:03:30.849Z",
+  "generatedAt": "2026-07-24T16:08:46.820Z",
   "stats": {
     "pubCount": 149,
     "ratingCount": 179,
@@ -446,7 +446,7 @@ export const londonData = {
     "avgPriceChange12m": 1.3355066455358882,
     "topRatedPub": {
       "id": "osm-156725307",
-      "name": "Feeney's",
+      "name": "Feeney's 48 Mark Lane",
       "address": "48 Mark Lane, Leadenhall Market, City of London, England, United Kingdom",
       "lat": 51.5099705,
       "lng": -0.08034,
@@ -460,7 +460,7 @@ export const londonData = {
     "top3RatedPubs": [
       {
         "id": "osm-156725307",
-        "name": "Feeney's",
+        "name": "Feeney's 48 Mark Lane",
         "address": "48 Mark Lane, Leadenhall Market, City of London, England, United Kingdom",
         "lat": 51.5099705,
         "lng": -0.08034,
@@ -485,16 +485,16 @@ export const londonData = {
         "score": 57
       },
       {
-        "id": "ChIJRelcGZIcdkgRaKvp5RgT_mo",
-        "name": "Molly Blooms",
-        "address": "525 Kingsland Rd, London E8 4AR, UK",
-        "lat": 51.5455901,
-        "lng": -0.0760589,
+        "id": "osm-8736085499",
+        "name": "Ramble Inn",
+        "address": "Mitcham Road, Tooting Graveney, Furzedown, London Borough of Wandsworth, England, United Kingdom",
+        "lat": 51.4226708,
+        "lng": -0.1601958,
         "country_code": "gb",
         "guinness_zero_confirmations": 0,
-        "guinness_zero_denials": 0,
-        "minPrice": null,
-        "maxPrice": null,
+        "guinness_zero_denials": 1,
+        "minPrice": 5.2,
+        "maxPrice": 5.2,
         "score": 56
       }
     ],
@@ -527,6 +527,7 @@ export const londonData = {
     "avgSpendPerVisit": 8.390833333333331,
     "avgPintsPerVisit": 1.2083333333333333,
     "guinnessZeroPerc": 26.845637583892618,
+    "guinnessZeroNoPerc": 9.395973154362416,
     "totalUserSpend": 929.4499999999996,
     "checkinsCount": 24,
     "currency": "£"
