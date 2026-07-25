@@ -150,17 +150,17 @@ export const belfastData = {
       "score": 36
     },
     "expensivePub": {
-      "id": "stoutly-416047d5-9b75-4fb4-9a6f-db855689a265-1781205757237",
-      "name": "Flax & Soda",
-      "address": "Airport Rd, Belfast, Crumlin BT29 4AB, United Kingdom",
-      "lat": 54.6613255693156,
-      "lng": -6.21637577281115,
+      "id": "stoutly-2dfb296b-df9a-49f3-b4ad-23405107a26b-1758217550483",
+      "name": "Malmaison",
+      "address": "34-38 Victoria St, Belfast BT1 3GH",
+      "lat": 54.5999266,
+      "lng": -5.9239234,
       "country_code": "gb",
       "guinness_zero_confirmations": 0,
       "guinness_zero_denials": 0,
-      "minPrice": 7.99,
-      "maxPrice": 7.99,
-      "score": 11
+      "minPrice": 7.5,
+      "maxPrice": 7.5,
+      "score": 33
     },
     "avgSpendPerVisit": 6.735,
     "avgPintsPerVisit": 1,
