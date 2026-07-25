@@ -278,6 +278,19 @@ export const niData = {
     },
     "top3RatedPubs": [
       {
+        "id": "osm-1615810760",
+        "name": "Portstewart Arms",
+        "address": "Coleraine Road, Portstewart, County Londonderry, Northern Ireland, United Kingdom",
+        "lat": 55.1818153,
+        "lng": -6.7177669,
+        "country_code": "gb",
+        "guinness_zero_confirmations": 9,
+        "guinness_zero_denials": 2,
+        "minPrice": 5.2,
+        "maxPrice": 5.4,
+        "score": 75
+      },
+      {
         "id": "osm-4248319381",
         "name": "Madden's",
         "address": "74 Berry Street, Belfast, County Antrim, Northern Ireland, United Kingdom",
@@ -302,19 +315,6 @@ export const niData = {
         "minPrice": 5,
         "maxPrice": 5.3,
         "score": 66
-      },
-      {
-        "id": "ChIJ-5eCq3fhX0gRFj-2nKvEatM",
-        "name": "Oakgrove Bar",
-        "address": "88 Bishop St, Londonderry BT48 6QE, UK",
-        "lat": 54.992038,
-        "lng": -7.3262124,
-        "country_code": "gb",
-        "guinness_zero_confirmations": 0,
-        "guinness_zero_denials": 0,
-        "minPrice": 4.7,
-        "maxPrice": 4.8,
-        "score": 62
       }
     ],
     "cheapestPub": {
@@ -807,19 +807,32 @@ export const ukData = {
     ],
     "avgPriceChange12m": 1.2755532633815305,
     "topRatedPub": {
-      "id": "osm-4248319381",
-      "name": "Madden's",
-      "address": "74 Berry Street, Belfast, County Antrim, Northern Ireland, United Kingdom",
-      "lat": 54.6001366,
-      "lng": -5.9337111,
+      "id": "osm-1615810760",
+      "name": "Portstewart Arms",
+      "address": "Coleraine Road, Portstewart, County Londonderry, Northern Ireland, United Kingdom",
+      "lat": 55.1818153,
+      "lng": -6.7177669,
       "country_code": "gb",
-      "guinness_zero_confirmations": 2,
-      "guinness_zero_denials": 0,
-      "minPrice": 5.8,
-      "maxPrice": 5.8,
-      "score": 69
+      "guinness_zero_confirmations": 9,
+      "guinness_zero_denials": 2,
+      "minPrice": 5.2,
+      "maxPrice": 5.4,
+      "score": 75
     },
     "top3RatedPubs": [
+      {
+        "id": "osm-1615810760",
+        "name": "Portstewart Arms",
+        "address": "Coleraine Road, Portstewart, County Londonderry, Northern Ireland, United Kingdom",
+        "lat": 55.1818153,
+        "lng": -6.7177669,
+        "country_code": "gb",
+        "guinness_zero_confirmations": 9,
+        "guinness_zero_denials": 2,
+        "minPrice": 5.2,
+        "maxPrice": 5.4,
+        "score": 75
+      },
       {
         "id": "osm-4248319381",
         "name": "Madden's",
@@ -845,19 +858,6 @@ export const ukData = {
         "minPrice": 5,
         "maxPrice": 5.3,
         "score": 66
-      },
-      {
-        "id": "ChIJ-5eCq3fhX0gRFj-2nKvEatM",
-        "name": "Oakgrove Bar",
-        "address": "88 Bishop St, Londonderry BT48 6QE, UK",
-        "lat": 54.992038,
-        "lng": -7.3262124,
-        "country_code": "gb",
-        "guinness_zero_confirmations": 0,
-        "guinness_zero_denials": 0,
-        "minPrice": 4.7,
-        "maxPrice": 4.8,
-        "score": 62
       }
     ],
     "cheapestPub": {
