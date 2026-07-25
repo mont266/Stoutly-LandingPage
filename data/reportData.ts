@@ -537,13 +537,13 @@ export const londonData = {
 
 export const dublinData = {
   "region": "Dublin",
-  "generatedAt": "2026-07-23T18:27:11.817Z",
+  "generatedAt": "2026-07-25T11:34:45.177Z",
   "stats": {
-    "pubCount": 136,
-    "ratingCount": 179,
-    "avgPrice": 6.9844537815126015,
-    "avgQuality": 4.027932960893855,
-    "avgScore": 37.72222222222222,
+    "pubCount": 137,
+    "ratingCount": 180,
+    "avgPrice": 6.972916666666664,
+    "avgQuality": 4.027777777777778,
+    "avgScore": 37.76377952755905,
     "trendData": [
       {
         "month": "2025-07",
@@ -619,8 +619,8 @@ export const dublinData = {
       },
       {
         "month": "2026-07",
-        "avgPrice": 8.123076923076924,
-        "ratingsCount": 13,
+        "avgPrice": 7.942857142857143,
+        "ratingsCount": 14,
         "avgPercChange": 0
       }
     ],
@@ -653,19 +653,6 @@ export const dublinData = {
         "score": 58
       },
       {
-        "id": "osm-521230125",
-        "name": "Wren's Nest",
-        "address": "Lower Lucan Road, Blanchardstown, County Dublin, Ireland",
-        "lat": 53.3625347,
-        "lng": -6.4018036,
-        "country_code": "ie",
-        "guinness_zero_confirmations": 0,
-        "guinness_zero_denials": 0,
-        "minPrice": null,
-        "maxPrice": null,
-        "score": 53
-      },
-      {
         "id": "osm-228290004",
         "name": "Bowe’s",
         "address": "31 Fleet Street, Mansion House A ED, County Dublin, Ireland",
@@ -676,6 +663,19 @@ export const dublinData = {
         "guinness_zero_denials": 0,
         "minPrice": 7.1,
         "maxPrice": 7.5,
+        "score": 53
+      },
+      {
+        "id": "osm-229316784",
+        "name": "J. Grogan's",
+        "address": "15 William Street South, Royal Exchange B ED, County Dublin, Ireland",
+        "lat": 53.3422403,
+        "lng": -6.2627051,
+        "country_code": "ie",
+        "guinness_zero_confirmations": 2,
+        "guinness_zero_denials": 0,
+        "minPrice": 6.95,
+        "maxPrice": 7.2,
         "score": 53
       }
     ],
@@ -705,15 +705,16 @@ export const dublinData = {
       "maxPrice": 10.95,
       "score": 29
     },
-    "avgSpendPerVisit": 7.50714285714286,
+    "avgSpendPerVisit": 7.44137931034483,
     "avgPintsPerVisit": 1,
-    "guinnessZeroPerc": 42.64705882352941,
-    "totalUserSpend": 831.1499999999996,
-    "checkinsCount": 28,
+    "guinnessZeroPerc": 43.06569343065693,
+    "guinnessZeroNoPerc": 3.64963503649635,
+    "totalUserSpend": 836.7499999999997,
+    "checkinsCount": 29,
     "currency": "€"
   }
-};
-
+}
+;
 
 export const ukData = {
   "region": "United Kingdom (All)",
