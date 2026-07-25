@@ -123,17 +123,17 @@ export const belfastData = {
         "score": 57
       },
       {
-        "id": "osm-3932410840",
-        "name": "Garrick Bar",
-        "address": "29 Chichester St, Belfast BT1 4JB, UK",
-        "lat": 54.5972745,
-        "lng": -5.926617,
+        "id": "osm-2624736570",
+        "name": "White's Tavern",
+        "address": "2-4 Winecellar Entry, Markets, Belfast, County Antrim, Northern Ireland, United Kingdom",
+        "lat": 54.6000791,
+        "lng": -5.9284157,
         "country_code": "gb",
-        "guinness_zero_confirmations": 0,
+        "guinness_zero_confirmations": 3,
         "guinness_zero_denials": 0,
-        "minPrice": null,
-        "maxPrice": null,
-        "score": 56
+        "minPrice": 5.8,
+        "maxPrice": 6.85,
+        "score": 55
       }
     ],
     "cheapestPub": {
